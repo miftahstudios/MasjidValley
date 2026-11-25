@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masjid Valley — Playable Slice</title>
+<style>
+  :root { --green:#0d3b2e; --gold:#d4af37; --cream:#f5efe0; --soil:#6b4a2f; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Georgia,serif; background:#0a2e23; color:var(--cream); }
+  .wrap { max-width:640px; margin:0 auto; padding:14px; }
+  h1 { text-align:center; color:var(--gold); margin:6px 0 2px; letter-spacing:1px; }
+  .sub { text-align:center; font-size:13px; opacity:.85; margin-bottom:12px; }
+  .card { background:#124736; border:2px solid var(--gold); border-radius:12px; padding:12px; margin-bottom:12px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .pill { background:#0d3b2e; border:1px solid var(--gold); border-radius:20px; padding:4px 10px; font-size:14px; }
+  .pill b { color:var(--gold); }
+  .prayers { display:flex; gap:4px; margin:8px 0; }
+  .prayer { flex:1; text-align:center; padding:6px 2px; border-radius:8px; background:#0d3b2e; font-size:12px; border:1px solid transparent; }
+  .prayer.now { border-color:var(--gold); background:#1d5c46; font-weight:bold; }
+  .prayer.done { opacity:.45; }
+  /* masjid scene */
+  .masjid { text-align:center; background:linear-gradient(#274b63,#0d3b2e); border-radius:10px; padding:14px 8px 8px; position:relative; overflow:hidden; }
+  .dome { font-size:44px; line-height:1; }
+  .building { font-size:34px; letter-spacing:2px; }
+  .carpet { margin:8px auto 4px; max-width:280px; padding:6px; border-radius:6px; font-size:13px; }
+  .carpet.worn { background:#5a4632; color:#cbb; border:1px dashed #8a6d4b; }
+  .carpet.new { background:#7a1f2b; color:#ffd98a; border:2px solid var(--gold); }
+  .cat { font-size:13px; margin-top:4px; }
+  .catface { display:inline-block; width:22px; height:16px; background:#e8c87a; border-radius:8px 8px 4px 4px; position:relative; vertical-align:middle; }
+  .catface:before, .catface:after { content:""; position:absolute; top:-6px; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:7px solid #e8c87a; }
+  .catface:before { left:1px; } .catface:after { right:1px; }
+  /* garden */
+  .garden { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:8px; }
+  .plot { aspect-ratio:1.15; border-radius:10px; border:2px solid #4a7a5f; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; font-size:26px; background:#2e5d43; user-select:none; }
+  .plot small { font-size:11px; margin-top:4px; color:#ffe9a8; }
+  .plot.tilled { background:var(--soil); }
+  .plot.watered { background:#4a3520; border-color:#7ec8e3; }
+  .plot.grown { background:#3f7a34; border-color:var(--gold); }
+  .tools { display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
+  .tool { flex:1; min-width:70px; padding:9px 4px; border-radius:9px; border:2px solid var(--gold); background:#0d3b2e; color:var(--cream); font-size:14px; cursor:pointer; }
+  .tool.sel { background:var(--gold); color:#0d3b2e; font-weight:bold; }
+  .cropbtn { padding:6px 10px; border-radius:16px; border:1px solid var(--gold); background:#0d3b2e; color:var(--cream); cursor:pointer; font-size:13px; }
+  .cropbtn.sel { background:var(--gold); color:#0d3b2e; font-weight:bold; }
+  button.act { padding:10px 14px; border-radius:10px; border:2px solid var(--gold); background:var(--gold); color:#0d3b2e; font-weight:bold; font-size:15px; cursor:pointer; width:100%; margin-top:8px; }
+  button.act:disabled { opacity:.45; cursor:not-allowed; }
+  button.small { width:auto; padding:6px 10px; font-size:13px; margin-top:4px; }
+  .npc { border-top:1px dashed #4a7a5f; padding-top:8px; margin-top:8px; font-size:14px; }
+  .hearts { color:#ff8fa3; letter-spacing:2px; }
+  .log { font-size:13px; min-height:34px; background:#0d3b2e; border-radius:8px; padding:8px; margin-top:8px; }
+  .win { background:#7a1f2b; border:2px solid var(--gold); border-radius:10px; padding:12px; text-align:center; font-size:15px; display:none; }
+  .avatar-pick { display:flex; gap:10px; justify-content:center; margin:8px 0; }
+  .avatar-pick button { padding:12px; border-radius:10px; border:2px solid var(--gold); background:#0d3b2e; color:var(--cream); cursor:pointer; font-size:14px; }
+  .avatar-pick button.sel { background:var(--gold); color:#0d3b2e; font-weight:bold; }
+  .figure { width:34px; height:44px; margin:0 auto 4px; border-radius:8px 8px 4px 4px; position:relative; }
+  .figure.hijab { background:#1f6f4a; } .figure.hijab:before { content:""; position:absolute; top:-6px; left:4px; right:4px; height:14px; background:#7a1f2b; border-radius:10px 10px 0 0; }
+  .figure.kufi { background:#e8e0c8; } .figure.kufi:before { content:""; position:absolute; top:-6px; left:7px; right:7px; height:9px; background:#fff; border-radius:6px 6px 0 0; border:1px solid var(--gold); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🕌 Masjid Valley</h1>
+  <div class="sub">A cozy game about bringing a masjid back to life — one Hijri year, five prayers a day. No faces, no chance, halal only.</div>
+
+  <div class="card" id="avatarCard">
+    <b>Choose your traveller</b> (everyone in this game is a faceless pixel figure):
+    <div class="avatar-pick">
+      <button id="avHijab"><div class="figure hijab"></div>Hijab &amp; abaya</button>
+      <button id="avKufi"><div class="figure kufi"></div>Kufi &amp; thobe</button>
+    </div>
+    <div style="font-size:13px; text-align:center;" id="avatarNote">Pick one to begin — you can change it later from the garden.</div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <span class="pill">Day <b id="dayNum">1</b> · Muharram</span>
+      <span class="pill">Coins <b id="coins">20</b></span>
+      <span class="pill" id="barakahPill">Barakah: —</span>
+      <span class="pill">Cat <span id="catHearts">♡♡♡</span></span>
+    </div>
+    <div class="prayers" id="prayerBar"></div>
+    <div style="font-size:13px;">Work happens between prayers. When you are done working, go to prayer — it moves the day on, and praying on time gives barakah: your watered crops grow an extra stage.</div>
+    <button class="act" id="prayBtn">Go to prayer — Fajr</button>
+    <button class="act" id="sleepBtn" style="display:none;">Sleep — start a new day</button>
+  </div>
+
+  <div class="card">
+    <div class="masjid">
+      <div class="dome">🕌</div>
+      <div class="building">▮▮ ▮▮▮ ▮▮</div>
+      <div class="carpet worn" id="carpet">Prayer hall carpet — worn thin, full of holes</div>
+      <div class="cat" id="catLine"><span class="catface"></span> The masjid cat watches you from the wall.</div>
+    </div>
+    <button class="act" id="restoreBtn">Restore the prayer hall carpet — 80 coins</button>
+    <div style="font-size:13px; margin-top:6px;">Restoring a room visibly changes the masjid. The carpet is the first project — the minaret, wudu area, library, garden wall and dome come in the full game.</div>
+  </div>
+
+  <div class="card">
+    <b>The masjid garden</b> — 6 plots. Yields are fixed, never random: a well-watered crop always gives its full yield.
+    <div class="tools" id="toolBar">
+      <button class="tool sel" data-tool="hoe">⛏ Hoe</button>
+      <button class="tool" data-tool="seed">🌱 Plant</button>
+      <button class="tool" data-tool="water">💧 Water</button>
+      <button class="tool" data-tool="harvest">🧺 Harvest</button>
+    </div>
+    <div id="seedPicker" style="display:none; gap:6px; flex-wrap:wrap;" class="row">
+      <span style="font-size:13px;">Seeds (free from Abu Khalid's stall):</span>
+      <button class="cropbtn sel" data-crop="mint">🌿 Mint · 2 grows · yields 3 · sells 6</button>
+      <button class="cropbtn" data-crop="tomato">🍅 Tomato · 3 grows · yields 2 · sells 10</button>
+      <button class="cropbtn" data-crop="wheat">🌾 Wheat · 4 grows · yields 2 · sells 8</button>
+    </div>
+    <div class="garden" id="garden"></div>
+    <div style="font-size:13px; margin-top:8px;">Tap a plot with the tool you need. Watered crops grow one stage each time you go to prayer (two with barakah). Crops dry out overnight, so water again each day.</div>
+  </div>
+
+  <div class="card">
+    <b>Market stall</b> — sell your harvest for coins (honest trade only).
+    <div class="row" id="market" style="margin-top:6px;"></div>
+    <div class="npc">
+      <b>Imam Yusuf</b> <span class="hearts" id="heartsImam">♡♡♡♡♡</span><br>
+      Task: bring <b>3 mint</b> for the children's class. Reward: 25 coins + trust.
+      <button class="small act" id="taskImam">Give 3 mint</button>
+      <span id="taskImamDone"></span>
+    </div>
+    <div class="npc">
+      <b>Abu Khalid</b> <span class="hearts" id="heartsKhalid">♡♡♡♡♡</span><br>
+      Task: bring <b>2 wheat</b> for the community kitchen. Reward: 20 coins + trust.
+      <button class="small act" id="taskKhalid">Give 2 wheat</button>
+      <span id="taskKhalidDone"></span>
+    </div>
+    <div class="npc">
+      <b>The masjid cat</b><br>
+      Feed it 1 crop of any kind. At 3 feeds it follows you around the courtyard — and once the new carpet is in, it sleeps on it.
+      <button class="small act" id="feedCat">Feed the cat (1 crop)</button>
+    </div>
+    <div class="log" id="log">You arrive at your grandmother's masjid. Imam Yusuf hands you the keys. "Clear the courtyard, fix the garden wall — start with the garden."</div>
+  </div>
+
+  <div class="win" id="winBox">
+    <b>🌙 The courtyard is alive again!</b><br>
+    Carpet restored, both neighbours helped, the cat fed and following you. That is the whole loop — work, earn, restore — in one sitting.<br>
+    Keep playing, or tell Pete what to add next: the Ramadan week, the shaykh's counsel, hunting with zabiha, or the cooking minigame.
+  </div>
+
+  <div style="font-size:12px; text-align:center; opacity:.7;">Slice 1 — built from the Masjid Valley outline. No faces, no chance, halal economy only. Duas and knowledge in the full game come from authentic sources only.</div>
+</div>
+
+<script>
+const PRAYERS = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+const CROPS = {
+  mint:   { icon:"🌿", name:"Mint",   grows:2, yield:3, price:6 },
+  tomato: { icon:"🍅", name:"Tomato", grows:3, yield:2, price:10 },
+  wheat:  { icon:"🌾", name:"Wheat",  grows:4, yield:2, price:8 }
+};
+const state = {
+  day: 1, coins: 20, prayer: 0, barakah: false,
+  plots: Array.from({length:6}, () => ({ stage:"grass", crop:null, growth:0, watered:false })),
+  inv: { mint:0, tomato:0, wheat:0 },
+  carpet: false, catFed: 0, catFollows: false,
+  hearts: { imam:0, khalid:0 }, tasksDone: { imam:false, khalid:false },
+  tool: "hoe", seed: "mint", avatar: null, won: false
+};
+const $ = id => document.getElementById(id);
+const logEl = $("log");
+function say(msg){ logEl.textContent = msg; }
+function hearts(n){ return "♥".repeat(n) + "♡".repeat(5-n); }
+
+function render(){
+  $("dayNum").textContent = state.day;
+  $("coins").textContent = state.coins;
+  $("barakahPill").innerHTML = "Barakah: " + (state.barakah ? "<b>✦ blessed</b>" : "—");
+  $("catHearts").textContent = "♥".repeat(Math.min(3,state.catFed)) + "♡".repeat(3-Math.min(3,state.catFed));
+  // prayer bar
+  const bar = $("prayerBar"); bar.innerHTML = "";
+  PRAYERS.forEach((p,i)=>{
+    const d = document.createElement("div");
+    d.className = "prayer" + (i===state.prayer ? " now" : "") + (i<state.prayer ? " done" : "");
+    d.textContent = p; bar.appendChild(d);
+  });
+  const doneDay = state.prayer >= PRAYERS.length;
+  $("prayBtn").style.display = doneDay ? "none" : "block";
+  $("sleepBtn").style.display = doneDay ? "block" : "none";
+  $("prayBtn").textContent = doneDay ? "" : "Go to prayer — " + PRAYERS[state.prayer];
+  // carpet
+  const c = $("carpet");
+  c.className = "carpet " + (state.carpet ? "new" : "worn");
+  c.textContent = state.carpet ? "Prayer hall carpet — brand new, deep red with gold borders ✦" : "Prayer hall carpet — worn thin, full of holes";
+  $("restoreBtn").disabled = state.carpet || state.coins < 80;
+  $("restoreBtn").textContent = state.carpet ? "✓ Carpet restored — the prayer hall glows" : "Restore the prayer hall carpet — 80 coins";
+  // cat
+  $("catLine").innerHTML = '<span class="catface"></span> ' + (
+    state.carpet && state.catFollows ? "The masjid cat is asleep on the new carpet. ♥" :
+    state.catFollows ? "The masjid cat follows you around the courtyard." :
+    state.catFed > 0 ? "The masjid cat purrs near you. Feed it " + (3-state.catFed) + " more time(s) and it will follow you." :
+    "The masjid cat watches you from the wall.");
+  // garden
+  const g = $("garden"); g.innerHTML = "";
+  state.plots.forEach((p,i)=>{
+    const d = document.createElement("div");
+    let icon = "🌱", label = "grass", cls = "";
+    if(p.stage==="tilled"){ icon="🟫"; label="tilled soil"; cls="tilled"; }
+    if(p.stage==="planted"){ icon=CROPS[p.crop].icon; label=CROPS[p.crop].name+" · growing "+p.growth+"/"+CROPS[p.crop].grows; cls = p.watered ? "watered" : ""; }
+    if(p.stage==="grown"){ icon=CROPS[p.crop].icon; label=CROPS[p.crop].name+" · ready!"; cls="grown"; }
+    d.className = "plot " + cls; d.innerHTML = icon + "<small>"+label+"</small>";
+    d.onclick = ()=> usePlot(i);
+    g.appendChild(d);
+  });
+  // market
+  const m = $("market"); m.innerHTML = "";
+  Object.keys(CROPS).forEach(k=>{
+    const b = document.createElement("button");
+    b.className = "cropbtn"; b.disabled = state.inv[k]===0;
+    b.textContent = CROPS[k].icon+" "+CROPS[k].name+" ×"+state.inv[k]+" — sell 1 for "+CROPS[k].price;
+    b.onclick = ()=>{ state.inv[k]--; state.coins += CROPS[k].price; say("Sold 1 "+CROPS[k].name+" for "+CROPS[k].price+" coins. Honest trade, alhamdulillah."); render(); };
+    m.appendChild(b);
+  });
+  if(Object.values(state.inv).every(v=>v===0)) m.innerHTML = "<span style='font-size:13px;'>Nothing to sell yet — harvest something first.</span>";
+  // tasks
+  $("heartsImam").textContent = hearts(state.hearts.imam);
+  $("heartsKhalid").textContent = hearts(state.hearts.khalid);
+  $("taskImam").disabled = state.tasksDone.imam || state.inv.mint < 3;
+  $("taskImam").textContent = state.tasksDone.imam ? "✓ Done" : "Give 3 mint";
+  $("taskImamDone").textContent = state.tasksDone.imam ? " — Imam Yusuf smiles. \"The children will love this.\"" : "";
+  $("taskKhalid").disabled = state.tasksDone.khalid || state.inv.wheat < 2;
+  $("taskKhalid").textContent = state.tasksDone.khalid ? "✓ Done" : "Give 2 wheat";
+  $("taskKhalidDone").textContent = state.tasksDone.khalid ? " — Abu Khalid nods. \"Good wheat. The kitchen will use it well.\"" : "";
+  // win
+  if(state.carpet && state.tasksDone.imam && state.tasksDone.khalid && !state.won){
+    state.won = true; $("winBox").style.display = "block";
+    say("The courtyard is alive again — carpet restored, both neighbours helped, the cat fed. That is the whole loop!");
+  }
+  $("seedPicker").style.display = state.tool==="seed" ? "flex" : "none";
+}
+
+function usePlot(i){
+  const p = state.plots[i];
+  if(state.tool==="hoe"){
+    if(p.stage==="grass"){ p.stage="tilled"; say("Tilled plot "+(i+1)+". Good soil, ready for seeds."); }
+    else say("That plot is already worked — try planting or watering.");
+  } else if(state.tool==="seed"){
+    if(p.stage==="tilled"){ p.stage="planted"; p.crop=state.seed; p.growth=0; p.watered=false; say("Planted "+CROPS[state.seed].name+" in plot "+(i+1)+". Water it so it grows."); }
+    else say("Till the plot with the hoe first, then plant.");
+  } else if(state.tool==="water"){
+    if(p.stage==="planted" && !p.watered){ p.watered=true; say("Watered the "+CROPS[p.crop].name+". It will grow when you go to prayer."); }
+    else if(p.stage==="planted") say("Already watered — it will grow at the next prayer.");
+    else say("Nothing to water here.");
+  } else if(state.tool==="harvest"){
+    if(p.stage==="grown"){ state.inv[p.crop]+=CROPS[p.crop].yield; say("Harvested "+CROPS[p.crop].yield+" "+CROPS[p.crop].name+" from plot "+(i+1)+". Fixed yield — no luck involved."); p.stage="tilled"; p.crop=null; p.growth=0; p.watered=false; }
+    else say("Nothing ripe here yet — watered crops grow at each prayer.");
+  }
+  render();
+}
+
+$("prayBtn").onclick = ()=>{
+  if(state.prayer >= PRAYERS.length) return;
+  const name = PRAYERS[state.prayer];
+  // crops grow
+  let grew = 0;
+  state.plots.forEach(p=>{
+    if(p.stage==="planted" && p.watered){
+      p.growth += state.barakah ? 2 : 1; grew++;
+      if(p.growth >= CROPS[p.crop].grows){ p.stage="grown"; p.watered=false; }
+    }
+  });
+  state.prayer++;
+  state.barakah = true; // praying on time gives barakah for the next stretch
+  say("You prayed "+name+" with the community." + (grew ? " "+grew+" watered crop(s) grew." : " The garden waits.") + " Barakah blesses the next stretch — watered crops will grow double.");
+  render();
+};
+$("sleepBtn").onclick = ()=>{
+  state.day++; state.prayer = 0; state.barakah = false;
+  state.plots.forEach(p=>{ if(p.stage==="planted") p.watered=false; });
+  say("A new day dawns over the masjid — Day "+state.day+" of Muharram. The crops dried overnight; water them again.");
+  render();
+};
+$("restoreBtn").onclick = ()=>{
+  if(state.carpet || state.coins < 80) return;
+  state.coins -= 80; state.carpet = true;
+  say("The new carpet is laid in the prayer hall — deep red, gold borders. The room already feels alive.");
+  render();
+};
+$("taskImam").onclick = ()=>{
+  if(state.tasksDone.imam || state.inv.mint < 3) return;
+  state.inv.mint -= 3; state.coins += 25; state.hearts.imam++; state.tasksDone.imam = true;
+  say("Imam Yusuf takes the mint for the children's class. +25 coins, and his trust grows.");
+  render();
+};
+$("taskKhalid").onclick = ()=>{
+  if(state.tasksDone.khalid || state.inv.wheat < 2) return;
+  state.inv.wheat -= 2; state.coins += 20; state.hearts.khalid++; state.tasksDone.khalid = true;
+  say("Abu Khalid takes the wheat for the kitchen. +20 coins, and his trust grows.");
+  render();
+};
+$("feedCat").onclick = ()=>{
+  const k = Object.keys(CROPS).find(k=>state.inv[k]>0);
+  if(!k){ say("You have nothing to feed the cat — harvest a crop first."); return; }
+  state.inv[k]--; state.catFed++;
+  if(state.catFed>=3) state.catFollows = true;
+  say("You feed the cat a "+CROPS[k].name.toLowerCase()+". It purrs." + (state.catFollows ? " It now follows you everywhere." : ""));
+  render();
+};
+document.querySelectorAll("#toolBar .tool").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll("#toolBar .tool").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel"); state.tool = b.dataset.tool; render();
+  };
+});
+document.querySelectorAll("#seedPicker .cropbtn").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll("#seedPicker .cropbtn").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel"); state.seed = b.dataset.crop;
+  };
+});
+$("avHijab").onclick = ()=>{ state.avatar="hijab & abaya"; $("avHijab").classList.add("sel"); $("avKufi").classList.remove("sel"); $("avatarNote").textContent="You are wearing hijab & abaya. The courtyard is yours — start in the garden below."; };
+$("avKufi").onclick = ()=>{ state.avatar="kufi & thobe"; $("avKufi").classList.add("sel"); $("avHijab").classList.remove("sel"); $("avatarNote").textContent="You are wearing kufi & thobe. The courtyard is yours — start in the garden below."; };
+render();
+</script>
+</body>
+</html>
