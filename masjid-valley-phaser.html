@@ -206,25 +206,12 @@
   <div class="panel">
     <h1>🗺 Masjid Valley</h1>
     <div class="mapgrid">
-      <div>🕌 <b>The Masjid</b> — Ottoman stone, grey-blue domes, two pencil minarets. Imam Yusuf keeps the steps.</div>
-      <div>🎧 <b>Listening Corner</b> — a quiet room off the courtyard for recitation, and recitation only.</div>
-      <div>🌿 <b>Your Yard</b> — six soil plots, your house, and room to grow. Bilal the builder works from here.</div>
-      <div>💧 <b>The Old Cistern</b> — the gathering place. Restore it through its bundle.</div>
-      <div>🐐 <b>Animal Pen</b> — chickens, goats, sheep, and the beehives. Feed them, and they provide.</div>
-      <div>🌱 <b>Glasshouse</b> — locked until its bundle is done; then crops grow all year.</div>
-      <div>🎣 <b>The Pond</b> — fish with timing and patience. Skill, never luck.</div>
-      <div>⛏ <b>The Cistern Works</b> — the digging ground beside the old cistern: stone, clay and lime on a steady rotation for building.</div>
-      <div>🧺 <b>Abu Khalid's Stall</b> — seeds, tools and supplies; he buys your harvest too.</div>
-      <div>🌊 <b>The River</b> — fish with Salim on the east bank. Trout, carp and catfish by season and weather.</div>
-      <div>🌲 <b>The Woods</b> — forage sage, dates, thyme and rosehips from fixed spots; fallen branches give wood.</div>
-      <div>🦌 <b>Hunting Grounds</b> — deer and rabbits in the north-east woods. The shaykh teaches zabiha first.</div>
-      <div>🏠 <b>Shaykh Abdullah's House</b> — counsel: advice, religious judgments, dhikr and duaa. A visit costs one prayer block.</div>
-      <div>🍲 <b>Community Kitchen</b> — Hassan's cooking minigame, iftar prep, recipes earned from people.</div>
-      <div>📌 <b>Noticeboard</b> — by the masjid steps: neighbours' requests, the weather forecast, your yearly focus.</div>
-      <div>💧 <b>Wudu Area &amp; Library</b> — restore them to unlock recipes and skill books.</div>
-      <div>🕌 <b>Minaret Lookout</b> — restore the minaret to see the whole valley and where everyone is.</div>
+      <div>🏡 <b>Home</b> — your house and yard, six soil plots, the home garden, the animal pen, the greenhouse, the mailbox by the house door, the goals board, the guest house, the orchard, the endowment garden, and Bilal's workshop.</div>
+      <div>🕌 <b>Mosque</b> — the masjid, the courtyard, the wudu fountain, the old cistern and its works, the library and the Masjid Archive, the minaret lookout, the restoration board, and the listening-corner bench.</div>
+      <div>🏘️ <b>Town</b> — the townspeople's homes, Abu Khalid's stall, the community kitchen, the noticeboard, Shaykh Abdullah's house, the community hall, the youth space, and the market farmers' row.</div>
+      <div>🌲 <b>Outskirts</b> — north of the Mosque: the river (fish with Salim), the woods with forage and fallen branches, the hunting grounds, and the pond.</div>
+      <div>🚶 <b>Walking between zones</b> — leave through a marked gap in the fence (dirt path + signpost): Home ↔ Mosque, Mosque ↔ Town, Mosque ↔ Outskirts.</div>
       <div id="mapNPCs"></div>
-      <div>📬 <b>Mailbox</b> — a letter most mornings. Check it by your gate.</div>
     </div>
     <button class="ghostbtn" id="btnMapClose" style="margin-top:12px">Close (M)</button>
   </div>
@@ -959,7 +946,7 @@ function snapshotState(){ return { v:4, name:G.name, gender:G.gender, outfit:G.o
   focus:G.focus, zabihaLearned:G.zabihaLearned, recipes:G.recipes, duasLearned:G.duasLearned, giftsGiven:G.giftsGiven, talkedToday:G.talkedToday, milestones:G.milestones, met:G.met, forage:G.forage, mailInbox:G.mailInbox, boardDone:G.boardDone, booksRead:G.booksRead, cookCount:G.cookCount, huntCount:G.huntCount,
   professions:G.professions, animals:G.animals, offered:G.offered, machines:G.machines, archiveItems:G.archiveItems, quests:G.quests, questsDone:G.questsDone, studyAnswers:G.studyAnswers, iftarCount:G.iftarCount, tileWins:G.tileWins, festivalsDone:G.festivalsDone, finaleYear:G.finaleYear, endingShown:G.endingShown, yearTwo:G.yearTwo, lastAct:G.lastAct, minaretRoomOpened:G.minaretRoomOpened, qurbaniDone:G.qurbaniDone,
   marriage:G.marriage, spouse:G.spouse, home:G.home, children:G.children, homePlots:G.homePlots,
-  generation:G.generation, mastery:G.mastery, goals:G.goals, catalogue:G.catalogue, endowmentYields:G.endowmentYields, careFinale:G.careFinale, newcomerLetters:G.newcomerLetters, cropsGrown:G.cropsGrown, recipesCooked:G.recipesCooked, orchardPlantedYear:G.orchardPlantedYear }; }
+  generation:G.generation, mastery:G.mastery, goals:G.goals, catalogue:G.catalogue, endowmentYields:G.endowmentYields, careFinale:G.careFinale, newcomerLetters:G.newcomerLetters, cropsGrown:G.cropsGrown, recipesCooked:G.recipesCooked, orchardPlantedYear:G.orchardPlantedYear, zone:currentZone, px:player?Math.round(player.x):HOME_SPAWN[0], py:player?Math.round(player.y):HOME_SPAWN[1] }; }
 function saveGame(){ if(!G.started) return false; try{ const s=JSON.stringify(snapshotState()); if(s===lastSaveStr) return true; lastSaveStr=s; localStorage.setItem(SAVE_KEY,s); return true; }catch(e){ return false; } }
 function readSave(){ try{ const s=localStorage.getItem(SAVE_KEY); return s?JSON.parse(s):null; }catch(e){ return null; } }
 function applySave(d){ if(!d||typeof d!=="object") return false;
@@ -1020,6 +1007,9 @@ function applySave(d){ if(!d||typeof d!=="object") return false;
   if(d.bundles) for(const k in G.bundles) if(d.bundles[k]){ G.bundles[k].done=!!d.bundles[k].done; G.bundles[k].given=d.bundles[k].given||{}; }
   if(Array.isArray(d.tasks)) d.tasks.forEach(dt=>{ const t=G.tasks.find(x=>x.id===dt.id); if(t){ t.done=!!dt.done; if(dt.prog)t.prog=dt.prog; if(dt.sold!==undefined)t.sold=dt.sold; } });
   if(Array.isArray(d.ledger)) G.ledger=d.ledger;
+  G._savedZone=(d.zone&&typeof d.zone==="string"&&["home","mosque","town","outskirts"].indexOf(d.zone)>=0)?d.zone:"home";
+  G._savedPX=(typeof d.px==="number"&&isFinite(d.px))?d.px:null;
+  G._savedPY=(typeof d.py==="number"&&isFinite(d.py))?d.py:null;
   lastSaveStr=JSON.stringify(snapshotState()); return true; }
 function loadGame(){ const d=readSave(); return d?applySave(d):false; }
 window.__MV={ G:G, saveGame:saveGame, loadGame:loadGame, readSave:readSave, applySave:applySave, snapshotState:snapshotState, ramadanMonth:ramadanMonth, isRamadan:isRamadan, eidFitrMonth:eidFitrMonth, isMarketDay:isMarketDay, prayerTimesFor:prayerTimesFor, prayersToday:prayersToday, currentAct:currentAct, fastLength:fastLength, skillLvl:skillLvl, SKILL_THRESH:SKILL_THRESH, PROFESSIONS:PROFESSIONS, MACHINES:MACHINES, };
@@ -1033,6 +1023,35 @@ let interactables=[], solids=[], plotSpr=[], cropSpr=[], debrisSpr=[], npcSpr={}
 let weatherTint=null, rainDrops=[], forageSpr={}, woodSpr={}, signSpr={}, wallTiles=[], workerSpr={}, shelfSpr=null, deerSpr=null, rabbitSpr=null, lastPrayerIdx=0, stringLightsSpr=null;
 let houseSpr=null, cradleSpr=null, homePlotSpr=[], homeCropSpr=[], childSprs=[], legacySpr={};
 let facing="down";
+/* ============================== ZONES (Stardew-style split) ==============================
+   Four 960x640 zones, same size as the old single world, so the camera behaves
+   exactly as before. Walk off a marked edge to cross into the next zone. */
+const ZONE_W=960, ZONE_H=640;
+const HOME_SPAWN=[80,296];
+const ZONE_NAMES={home:"Home",mosque:"Mosque",town:"Town",outskirts:"Outskirts"};
+const ZONES={
+  home:{id:"home",name:"Home",w:ZONE_W,h:ZONE_H,spawn:HOME_SPAWN,build:buildZoneHome},
+  mosque:{id:"mosque",name:"Mosque",w:ZONE_W,h:ZONE_H,spawn:[36,320],build:buildZoneMosque},
+  town:{id:"town",name:"Town",w:ZONE_W,h:ZONE_H,spawn:[36,320],build:buildZoneTown},
+  outskirts:{id:"outskirts",name:"Outskirts",w:ZONE_W,h:ZONE_H,spawn:[660,604],build:buildZoneOutskirts},
+};
+/* Exits: edge + coordinate corridor + destination + entry spawn in the new zone.
+   Home east <-> Mosque west, Mosque east <-> Town west, Mosque north <-> Outskirts south. */
+const ZONE_EXITS={
+  home:[{edge:"east",yMin:296,yMax:344,to:"mosque",spawn:[36,320]}],
+  mosque:[{edge:"west",yMin:296,yMax:344,to:"home",spawn:[924,320]},
+          {edge:"east",yMin:296,yMax:344,to:"town",spawn:[36,320]},
+          {edge:"north",xMin:636,xMax:684,to:"outskirts",spawn:[660,604]}],
+  town:[{edge:"west",yMin:296,yMax:344,to:"mosque",spawn:[924,320]}],
+  outskirts:[{edge:"south",xMin:636,xMax:684,to:"mosque",spawn:[660,36]}],
+};
+let currentZone="home", zoneObjs=[], npcInt={}, zoneCrossing=false;
+const NPC_TEX={ yusuf:"imam_yusuf_front", maryam:"umm_maryam_front", khalid:"abu_khalid_front", bilal:"bilal_front",
+  abdullah:"abdullah_front", hassan:"hassan_front", salim:"salim_front", fatimah:"fatimah_front", hamza:"hamza_front",
+  safiyyah:"safiyyah_front", omar:"omar_front", aisha:"aisha_front", khadijah:"khadijah_front", karim:"karim_front",
+  tariq:"tariq_front", sakina:"sakina_front", idris:"idris_front", zaynab:"zaynab_front", nura:"nura_front",
+  umm_layla:"umm_layla_front", abu_omar:"abu_omar_front", layla:"layla_front", maryam_y:"maryam_y_front", yusuf_y:"yusuf_y_front",
+  huda:"newcomer_huda_front", yasir:"newcomer_yasir_front" };
 function playerKey(frame){ return "player_"+G.gender+"_o"+G.outfit+"_"+frame; }
 function catKey(walk){ return "cat_"+G.cat+(walk?"_walk":""); }
 let promptEl=document.getElementById("prompt"), nearAct=null, clockAcc=0;
@@ -1396,7 +1415,7 @@ const ASSET_MANIFEST=[
 if(window.__MV){ window.__MV.ASSET_MANIFEST=ASSET_MANIFEST;
   Object.assign(window.__MV,{checkFestivals:checkFestivals,qurbaniScene:qurbaniScene,checkFinale:checkFinale,checkEnding:checkEnding,openMachine:openMachine,donateArchive:donateArchive,startTileGame:startTileGame,pressTile:pressTile,tilePatternFor:tilePatternFor,studyCircle:studyCircle,effectiveCropDays:effectiveCropDays,sellPrice:sellPrice,seedPrice:seedPrice,chooseProfession:chooseProfession,knowledgeCount:knowledgeCount,communityHearts:communityHearts,allBundlesDone:allBundlesDone,talkNPC:talkNPC,feedAnimals:feedAnimals,useForage:useForage,usePlot:usePlot,sleep:sleep,openJournal:openJournal,renderJournal:renderJournal,openBoard:openBoard,talkMinaret:talkMinaret,openCook:openCook,startCook:startCook,arriveNura:arriveNura,hearts:hearts,trustCap:trustCap,childStage:childStage,childStageKey:childStageKey,marriageCandidates8:marriageCandidates8,startMarriageCounsel:startMarriageCounsel,checkIstikhara:checkIstikhara,familyMeeting:familyMeeting,chooseMahr:chooseMahr,nikah:nikah,walimahScene:walimahScene,buildHomeUpgrade:buildHomeUpgrade,useHomePlot:useHomePlot,addChild:addChild,checkChildArrival:checkChildArrival,spouseMorningHelp:spouseMorningHelp,spouseLine:spouseLine,talkChild:talkChild,refreshHouse:refreshHouse,refreshCradle:refreshCradle,refreshChildSprites:refreshChildSprites,HOME_UPGRADES:HOME_UPGRADES,MAHR_CHOICES:MAHR_CHOICES,CHILD_NAMES:CHILD_NAMES,HOME_PLOT_DEFS:HOME_PLOT_DEFS,
   /* Phase D part 2 exports (for the self-test harness). */
-  masteryLvl:masteryLvl, MASTERY_THRESH:MASTERY_THRESH, MASTERY_UNLOCKS:MASTERY_UNLOCKS, addMastery:addMastery, goalsProgress:goalsProgress, catalogueTotal:catalogueTotal, catalogueCount:catalogueCount, completionPct:completionPct, completionBreakdown:completionBreakdown, checkGoals:checkGoals, checkCareFinale:checkCareFinale, careFinaleScene:careFinaleScene, dedicateBook:dedicateBook, checkGeneration:checkGeneration, arriveNewcomers:arriveNewcomers, newcomerYearLetter:newcomerYearLetter, endowmentWeekly:endowmentWeekly, orchardYield:orchardYield, legacyDoneCount:legacyDoneCount, LEGACY_KEYS:LEGACY_KEYS, DUAS_TOTAL:DUAS_TOTAL, refreshLegacySprites:refreshLegacySprites, refreshGenSprites:refreshGenSprites, spawnNewcomerSprites:spawnNewcomerSprites, talkGuestHouse:talkGuestHouse, talkCommunityHall:talkCommunityHall, talkYouthSpace:talkYouthSpace, talkLibrary2:talkLibrary2, talkOrchard:talkOrchard, talkEndowment:talkEndowment, talkFarmersRow:talkFarmersRow, GEN_LINES:GEN_LINES, YEAR2_QUESTS:YEAR2_QUESTS, duasLearnedSlots:duasLearnedSlots, riverFishNow:riverFishNow}); }
+  masteryLvl:masteryLvl, MASTERY_THRESH:MASTERY_THRESH, MASTERY_UNLOCKS:MASTERY_UNLOCKS, addMastery:addMastery, goalsProgress:goalsProgress, catalogueTotal:catalogueTotal, catalogueCount:catalogueCount, completionPct:completionPct, completionBreakdown:completionBreakdown, checkGoals:checkGoals, checkCareFinale:checkCareFinale, careFinaleScene:careFinaleScene, dedicateBook:dedicateBook, checkGeneration:checkGeneration, arriveNewcomers:arriveNewcomers, newcomerYearLetter:newcomerYearLetter, endowmentWeekly:endowmentWeekly, orchardYield:orchardYield, legacyDoneCount:legacyDoneCount, LEGACY_KEYS:LEGACY_KEYS, DUAS_TOTAL:DUAS_TOTAL, refreshLegacySprites:refreshLegacySprites, refreshGenSprites:refreshGenSprites, spawnNewcomerSprites:spawnNewcomerSprites, talkGuestHouse:talkGuestHouse, talkCommunityHall:talkCommunityHall, talkYouthSpace:talkYouthSpace, talkLibrary2:talkLibrary2, talkOrchard:talkOrchard, talkEndowment:talkEndowment, talkFarmersRow:talkFarmersRow, GEN_LINES:GEN_LINES, YEAR2_QUESTS:YEAR2_QUESTS, duasLearnedSlots:duasLearnedSlots, riverFishNow:riverFishNow, loadZone:loadZone, zoneCross:zoneCross, currentZone:function(){ return currentZone; }, ZONES:ZONES, ZONE_EXITS:ZONE_EXITS, npcSpot:npcSpot, scheduleNPCs:scheduleNPCs, areaName:areaName}); }
 class MainScene extends Phaser.Scene{
   constructor(){ super("main"); }
   preload(){
@@ -1421,190 +1440,14 @@ class MainScene extends Phaser.Scene{
   }
   create(){
     scene=this; buildTextures(this);
-    // ground — v2 grass variants in a deterministic mix, with flower & tuft tiles sprinkled in
-    for(let ty=0;ty<H/T;ty++) for(let tx=0;tx<W/T;tx++){ const h=(tx*31+ty*17)%23; const k=h===0?"grass_flowers":(h===5||h===11)?"grass_tufts":(h%3===0?"grass_b":(h%3===1?"grass_c":"grass")); this.add.image(tx*T+T/2,ty*T+T/2,k).setDepth(0); }
-    // river (east edge) + bank, woods floor (south-east) + hunting-ground floor (north-east)
-    for(let ty=3;ty<20;ty++){ for(let tx=28;tx<30;tx++){ this.add.image(tx*T+T/2,ty*T+T/2,((tx+ty)%3===0)?"water_b":"water").setDepth(0); } this.add.image(27*T+T/2,ty*T+T/2,"water_bank").setDepth(0); }
-    solid(28*T,3*T,2*T,17*T);
-    for(let ty=13;ty<20;ty++) for(let tx=20;tx<28;tx++){ if((tx*7+ty*13)%5===0) this.add.image(tx*T+T/2,ty*T+T/2,"forest_floor").setDepth(0); }
-    for(let ty=1;ty<7;ty++) for(let tx=20;tx<28;tx++){ if((tx*11+ty*7)%4===0) this.add.image(tx*T+T/2,ty*T+T/2,"forest_floor").setDepth(0); }
-    // courtyard: stone row in front of the masjid, dirt path crossing it north–south
-    for(let tx=0;tx<20;tx++){ this.add.image(tx*T+T/2,7*T+T/2,"stone_courtyard").setDepth(0); }
-    for(let ty=0;ty<13;ty++){ this.add.image(9*T+T/2,ty*T+T/2,"dirt_path").setDepth(0); this.add.image(10*T+T/2,ty*T+T/2,"dirt_path").setDepth(0); }
-    // gravel digging ground at the cistern works
-    for(let ty=10;ty<12;ty++) for(let tx=10;tx<14;tx++) this.add.image(tx*T+T/2,ty*T+T/2,"gravel").setDepth(0);
-    // pond (bottom right)
-    for(let ty=9;ty<12;ty++) for(let tx=15;tx<19;tx++) this.add.image(tx*T+T/2,ty*T+T/2,"water").setDepth(0);
-    solid(15*T,9*T,4*T,3*T);
-    // masjid (top centre) — Ottoman stone, grey-blue domes, two pencil minarets
-    this.add.image(320,72,"masjid").setDepth(2); solid(208,40,224,93);
-    // lanterns & flower pots dressing the masjid steps and house door
-    [[232,140],[408,140]].forEach(p=>this.add.image(p[0],p[1],"lantern").setOrigin(.5,1).setDepth(3));
-    [[272,140],[368,140]].forEach(p=>this.add.image(p[0],p[1],"flower_pot").setOrigin(.5,1).setDepth(3));
-    [[40,283],[120,283]].forEach(p=>this.add.image(p[0],p[1],"lantern").setOrigin(.5,1).setDepth(3));
-    // trees — olive, pine and cherry, feet (trunk base) at the old stand points
-    const trees=[["tree_pine",541,89,529,80],["tree_cherry",467,199,455,189],["tree_olive",60,345,48,336],
-      ["tree_olive",700,470,688,461],["tree_pine",656,560,644,551],["tree_cherry",880,600,868,591],["tree_date",792,556,780,547],
-      ["tree_olive",688,120,676,111],["tree_pine",848,80,836,71],["tree_cherry",768,200,756,191],["tree_pine",896,176,884,167],["tree_date",720,208,708,199]];
-    trees.forEach(t=>{ this.add.image(t[1],t[2],t[0]).setOrigin(.5,1).setDepth(3); solid(t[3],t[4],24,27); });
-    // house + yard (bottom left)
-    houseSpr=this.add.image(80,235,anyHomeUpgrade()?"house_upgraded":"house").setDepth(2); solid(35,212,93,64);
-    const debrisKeys=["debris_weeds","debris_stones","debris_branches"];
-    G.plots.forEach((p,i)=>{ const col=i%3,row=Math.floor(i/3); const x=Math.round((64+col*56)*2/3), y=Math.round((452+row*56)*2/3);
-      const sp=this.add.image(x,y,"tilled_dry").setDepth(1); plotSpr.push(sp);
-      const cs=this.add.image(x,y-3,"crop_mint_1").setDepth(2).setVisible(false); cropSpr.push(cs);
-      const ds=this.add.image(x,y,debrisKeys[i%3]).setDepth(3); debrisSpr.push(ds);
-      addInt(x,y,"Soil plot — C: clear / plant / water / harvest",()=>usePlot(i),31); });
-    // ---- Phase D: home garden — 4 plots beside the house (orchard row, herb bed, flower bed, crop plot) ----
-    G.homePlots.forEach((p,i)=>{ const x=170+i*35, y=320;
-      const sp=this.add.image(x,y,"tilled_dry").setDepth(1); homePlotSpr.push(sp);
-      if(p.kind==="dates") this.add.image(x,y,"orchard_row").setDepth(1);
-      if(p.kind==="herb") this.add.image(x,y,"herb_bed").setDepth(1);
-      if(p.kind==="flower") this.add.image(x,y,"flower_bed").setDepth(1);
-      const cs=this.add.image(x,y-3,"crop_mint_1").setDepth(2).setVisible(false); homeCropSpr.push(cs);
-      addInt(x,y,HOME_PLOT_DEFS[i].name+" — C: water / harvest",()=>useHomePlot(i),31); });
-    // cradle by the house door — shown while a baby is in the household
-    cradleSpr=this.add.image(140,262,"cradle").setDepth(3).setVisible(false);
-    // mailbox (v2 art)
-    this.add.image(152,261,"mailbox_v2").setDepth(3);
-    addInt(152,261,"Mailbox — X: read today's letter",()=>readMail(),32);
-    // stall (right of courtyard)
-    this.add.image(513,235,"stall").setDepth(2); solid(468,204,93,61);
-    this.add.image(455,262,"barrel").setOrigin(.5,1).setDepth(3);
-    addInt(513,275,"Abu Khalid's Stall — X: shop & sell",()=>openShop(),37);
-    // cistern (top right) — the old well at its heart
-    this.add.image(537,131,"well").setDepth(2).setScale(2); solid(491,100,93,64);
-    addInt(537,175,"Old Cistern — X: gathering place",()=>talkCistern(),37);
-    // listening corner bench (left of masjid)
-    this.add.image(159,159,"bench").setDepth(2);
-    addInt(159,159,"Listening Corner — X: sit & listen",()=>listeningCorner(),35);
-    // restoration board by masjid door
-    this.add.image(373,149,"board").setDepth(3).setScale(2/3);
-    addInt(373,149,"Restoration Board — X: bundles",()=>{ openJournal("bundles"); },32);
-    // masjid door — prayer hall, Taraweeh in Ramadan, Laylat al-Qadr on day 27
-    addInt(320,140,"Masjid Door — X: enter the prayer hall",()=>talkMasjid(),34);
-    // animal pen (mid left) — v2 fence tiles around the old pen ground
-    const pen={x0:44,y0:112,x1:144,y1:185};
-    [[pen.x0,pen.y0],[pen.x1,pen.y0],[pen.x0,pen.y1],[pen.x1,pen.y1]].forEach(p=>this.add.image(p[0],p[1],"fence_post").setDepth(1));
-    [76,108].forEach(x=>{ this.add.image(x,pen.y0,"fence_h").setDepth(1); this.add.image(x,pen.y1,"fence_h").setDepth(1); });
-    this.add.image(pen.x0,148,"fence_v").setDepth(1); this.add.image(pen.x1,148,"fence_v").setDepth(1);
-    const an=[["animal_chicken",70,137],["animal_chicken",100,159],["animal_goat",80,167],["animal_sheep",112,137],["hive",131,159]];
-    an.forEach(a=>{ const sp=this.add.image(a[1],a[2],a[0]).setDepth(3).setScale(2/3); animalSpr.push(sp); });
-    solid(44,112,100,73);
-    addInt(93,191,"Animal Pen — X: visit · C: feed",()=>visitAnimals(),40);
-    // glasshouse (mid right, locked visual)
-    const gh=this.add.image(440,313,"glasshouse").setDepth(2).setScale(2/3); solid(392,280,100,67);
-    addInt(440,357,"Glasshouse — X: look inside",()=>{ if(G.bundles.glasshouse.done){ toast("🌱 The glasshouse hums with green — crops here grow in every month once planted at the yard (bundle complete)."); } else { toast("🔒 The glasshouse is waiting on its bundle — stone, lime and coins. See the Restoration Board."); } },37);
-    // cistern works digging ground (bottom centre-right): stone, clay & lime piles
-    this.add.image(373,347,"debris_stones").setDepth(2);
-    this.add.image(411,360,"claypile").setDepth(2).setScale(2/3);
-    this.add.image(347,371,"limepile").setDepth(2).setScale(2/3);
-    solid(331,331,113,53);
-    addInt(381,353,"Cistern Works — C: gather (stone → clay → lime rotation)",()=>useGather(),39);
-    // pond fishing spot (edge, outside solid)
-    addInt(496,280,"Pond — C: fish with timing",()=>startFishing(),36);
-    // ---- Phase B places ----
-    // shaykh's house (top-left) — counsel
-    this.add.image(104,56,"shaykh_house").setDepth(2); solid(56,24,96,72);
-    addInt(104,112,"Shaykh Abdullah's House — X: counsel (costs one prayer block)",()=>openCounsel(),36);
-    // community kitchen (east of the courtyard)
-    this.add.image(752,256,"kitchen").setDepth(2); solid(704,224,96,72);
-    this.add.image(712,300,"stove").setDepth(3).setScale(2/3);
-    addInt(752,312,"Community Kitchen — X: cook with Hassan",()=>openCook(),38);
-    // noticeboard by the masjid steps
-    this.add.image(262,152,"noticeboard").setDepth(3);
-    addInt(262,152,"Noticeboard — X: requests, forecast & focus",()=>openBoard(),34);
-    // wudu area (fountain) + library shelf
-    this.add.image(456,168,"fountain").setDepth(2); solid(436,156,40,44);
-    addInt(456,168,"Wudu Area — X: look (restores with its bundle)",()=>talkWudu(),36);
-    shelfSpr=this.add.image(208,208,"shelf_empty").setDepth(2);
-    addInt(208,208,"Library — X: browse the shelves",()=>talkLibrary(),34);
-    // minaret lookout (right of the masjid)
-    addInt(440,140,"Minaret — X: climb the lookout",()=>talkMinaret(),34);
-    // river fishing spot (east bank) + Salim's ground
-    addInt(880,320,"River — C: fish with Salim",()=>startRiverFishing(),36);
-    // forage nodes (woods) + fallen-branch wood piles
-    FORAGE_NODES.forEach(nd=>{ const sp=this.add.image(nd.x,nd.y,nd.tex).setDepth(2); forageSpr[nd.id]=sp; addInt(nd.x,nd.y,nd.plant+" — C: gather (fixed spot, regrows each morning)",()=>useForage(nd.id),30); });
-    WOOD_NODES.forEach(nd=>{ const sp=this.add.image(nd.x,nd.y,"branch_pile").setDepth(2); woodSpr[nd.id]=sp; addInt(nd.x,nd.y,"Fallen branches — C: gather wood",()=>useWood(nd.id),30); });
-    // hunting grounds (north-east woods): deer + rabbit on fixed patrol paths
-    deerSpr=this.add.image(720,120,"deer").setDepth(3);
-    this.tweens.add({targets:deerSpr,x:840,duration:9000,yoyo:true,repeat:-1,ease:"Sine.easeInOut"});
-    rabbitSpr=this.add.image(800,180,"rabbit").setDepth(3);
-    this.tweens.add({targets:rabbitSpr,x:720,y:"-=8",duration:2600,yoyo:true,repeat:-1,ease:"Sine.easeInOut"});
-    addInt(768,128,"Hunting Grounds — X: stalk (zabiha first)",()=>openHunt(),40);
-    // garden-wall shortcut signposts (hidden until the wall bundle is done)
-    [["masjid",320,368],["market",560,320],["home",176,320]].forEach(sg=>{ const sp=this.add.image(sg[1],sg[2],"signpost").setDepth(3).setVisible(false); signSpr[sg[0]]=sp; addInt(sg[1],sg[2],"Shortcut — X: walk the garden-wall path",()=>useShortcut(sg[0]),32); });
-    // garden-wall tiles (hidden until the wall bundle is done)
-    for(let tx=1;tx<7;tx++){ const t=this.add.image(tx*T+T/2,368,"stone_wall").setDepth(1).setVisible(false); wallTiles.push(t); }
-    // bundle workers: Bilal + Hamza appear at a bundle site while work is in progress
-    workerSpr.bilal=this.add.image(160,368,"bilal_front").setOrigin(.5,1).setDepth(4).setVisible(false);
-    workerSpr.hamza=this.add.image(192,368,"hamza_front").setOrigin(.5,1).setDepth(4).setVisible(false);
-    // weather overlay: tint + rain streaks (screen-fixed, above the world)
+    // weather overlay: tint + rain streaks (screen-fixed, above the world) — global, kept across zones
     weatherTint=this.add.rectangle(0,0,VW,VH,0x2E4A6B).setOrigin(0).setScrollFactor(0).setDepth(90).setAlpha(0);
     for(let i=0;i<40;i++){ const r=this.add.rectangle((i*97)%VW,(i*53)%VH,2,14,0xBFE0F0).setScrollFactor(0).setDepth(91).setVisible(false).setAlpha(.7); rainDrops.push(r); }
-    // NPCs — 32x64 v2 characters, origin at the feet
-    const npcTex={ yusuf:"imam_yusuf_front", maryam:"umm_maryam_front", khalid:"abu_khalid_front", bilal:"bilal_front",
-      abdullah:"abdullah_front", hassan:"hassan_front", salim:"salim_front", fatimah:"fatimah_front", hamza:"hamza_front",
-      safiyyah:"safiyyah_front", omar:"omar_front", aisha:"aisha_front", khadijah:"khadijah_front", karim:"karim_front",
-      tariq:"tariq_front", sakina:"sakina_front", idris:"idris_front", zaynab:"zaynab_front", nura:"nura_front",
-      umm_layla:"umm_layla_front", abu_omar:"abu_omar_front", layla:"layla_front", maryam_y:"maryam_y_front", yusuf_y:"yusuf_y_front" };
-    const npcPos={ yusuf:[320,172,"Imam Yusuf"], maryam:[220,275,"Umm Maryam"], khalid:[513,299,"Abu Khalid"], bilal:[179,327,"Bilal the Builder"],
-      abdullah:[104,122,"Shaykh Abdullah"], hassan:[800,324,"Hassan the Cook"], salim:[848,320,"Salim the Fisherman"], fatimah:[720,484,"Fatimah the Herbalist"], hamza:[380,184,"Hamza"],
-      safiyyah:[240,600,"Hajja Safiyyah"], omar:[560,300,"Omar"], aisha:[208,240,"Aisha"], khadijah:[760,320,"Khadijah"], karim:[600,280,"Karim"],
-      tariq:[300,470,"Tariq"], sakina:[400,600,"Sakina"], idris:[168,244,"Idris"], zaynab:[560,600,"Zaynab"], nura:[440,200,"Nura"],
-      umm_layla:[440,604,"Umm Layla"], abu_omar:[280,604,"Abu Omar"], layla:[200,300,"Layla"], maryam_y:[208,280,"Maryam (young)"], yusuf_y:[600,440,"Yusuf (young)"] };
-    for(const k in npcPos){ const p=npcPos[k]; const sp=this.add.image(p[0],p[1],npcTex[k]).setOrigin(.5,1).setDepth(4); npcSpr[k]=sp; if(k==="nura"&&currentAct()<2&&G.year===1) sp.setVisible(false); addInt(p[0],p[1],p[2]+" — X: talk",()=>talkNPC(k),36); }
-    // ---- Phase C map: homes row (bottom centre), orchard, workshop ----
-    this.add.image(240,560,"house").setDepth(2); solid(194,528,93,64);
-    this.add.image(400,560,"house_b").setDepth(2); solid(354,528,93,64);
-    this.add.image(560,560,"house_c").setDepth(2); solid(514,528,93,64);
-    // orchard (Tariq's trees) — south of the cistern works
-    [["tree_olive",220,440],["tree_date",280,440],["tree_olive",340,440]].forEach(t=>{ this.add.image(t[1],t[2],t[0]).setOrigin(.5,1).setDepth(3); solid(t[1]-12,t[2]-9,24,27); });
-    addInt(280,470,"Orchard — X: Tariq's trees",()=>{ showDlg("The Orchard","🌴","Tariq's orchard — dates and olives, tended tree by tree. The trees give if you tend them.",[{t:"Walk among the trees",fn:closeDlg}]); },36);
-    // workshop (Bilal's, east of the orchard)
-    this.add.image(648,440,"workshop").setDepth(2); solid(608,408,80,64);
-    addInt(648,484,"Bilal's Workshop — X: visit",()=>{ showDlg("Bilal's Workshop","🔨","Sawdust, stone and steady work. Bilal builds the valley one wall at a time — and one day, young Yusuf will be his apprentice.",[{t:"Look around",fn:closeDlg}]); },36);
-    // artisan machines: kitchen row, herb garden, pen, orchard
-    const machineSpots=[["preserves","machine_preserves",720,336],["oven","machine_oven",776,336],["dehydrator","machine_dehydrator",824,336],["rosewater","machine_rosewater",680,520],["honey","machine_honey",160,200],["olivepress","machine_olivepress",360,470]];
-    machineSpots.forEach(ms=>{ this.add.image(ms[2],ms[3],ms[1]).setDepth(3); addInt(ms[2],ms[3],MACHINES[ms[0]].name+" — X: work the machine",()=>openMachine(ms[0]),34); });
-    // Masjid Archive shelf (beside the library shelf)
-    this.add.image(248,240,"archive_shelf").setDepth(2);
-    this.add.image(248,224,"archive_item").setDepth(3);
-    addInt(248,240,"Masjid Archive — X: donate & browse",()=>openArchive(),34);
-    // Ramadan string lights over the masjid (lit by the dome finale) + Eid bunting + sweets tray + minaret scaffold
-    stringLightsSpr=this.add.image(320,36,"string_lights").setDepth(3).setVisible(G.finaleYear===G.year);
-    this.add.image(320,232,"eid_bunting").setDepth(3).setVisible(G.month===eidFitrMonth(G.year)&&G.day===1);
-    this.add.image(800,340,"sweets_tray").setDepth(3);
-    this.add.image(440,120,"scaffold").setDepth(3).setVisible(!G.bundles.minaret.done);
-    // ---- Phase D part 2: legacy buildings (hidden until their bundle is complete) ----
-    legacySpr.guestHouse=this.add.image(170,235,"guest_house").setDepth(2).setVisible(!!G.bundles.guestHouse.done);
-    addInt(170,235,"Guest House — X: visit",()=>talkGuestHouse(),36);
-    legacySpr.communityHall=this.add.image(500,90,"community_hall").setDepth(2).setVisible(!!G.bundles.communityHall.done);
-    addInt(500,90,"Community Hall — X: visit",()=>talkCommunityHall(),36);
-    legacySpr.youthSpace=this.add.image(250,180,"youth_space").setDepth(2).setVisible(!!G.bundles.youthSpace.done);
-    addInt(250,180,"Youth Space — X: visit",()=>talkYouthSpace(),34);
-    legacySpr.libraryRoom2=this.add.image(280,235,"library_room2").setDepth(2).setVisible(!!G.bundles.libraryRoom2.done);
-    addInt(280,235,"Library Second Room — X: visit",()=>talkLibrary2(),34);
-    legacySpr.orchard=this.add.image(380,440,"orchard_row").setDepth(2).setVisible(!!G.bundles.orchard.done);
-    addInt(380,440,"Orchard Expansion — X: Tariq's grafted rows",()=>talkOrchard(),36);
-    legacySpr.endowmentGarden=this.add.image(880,540,"endowment_garden").setDepth(2).setVisible(!!G.bundles.endowmentGarden.done);
-    addInt(880,540,"Endowment Garden — X: the sadaqah garden",()=>talkEndowment(),36);
-    legacySpr.farmersRow=this.add.image(560,360,"stall_bakery").setDepth(2).setVisible(!!G.bundles.farmersRow.done);
-    legacySpr.farmersRowHerbs=this.add.image(600,360,"stall_herbs").setDepth(2).setVisible(!!G.bundles.farmersRow.done);
-    legacySpr.farmersRowPlayer=this.add.image(640,360,"stall_player").setDepth(2).setVisible(!!G.bundles.farmersRow.done);
-    addInt(600,360,"Farmers' Row — X: the market stalls",()=>talkFarmersRow(),40);
-    // goals board by the house — the goals board and Completion of Care page
-    this.add.image(200,240,"noticeboard").setDepth(2).setScale(2/3);
-    addInt(200,240,"Goals Board — X: your goals & Completion of Care",()=>openJournal("goals"),32);
-    refreshLegacySprites(); refreshGenSprites(); spawnNewcomerSprites();
-    // house door sleep
-    addInt(80,283,"Your House — X: sleep & start a new day",()=>sleep(),33);
-    // player + cat — player origin at the feet; cat follows
-    player=this.add.image(320,300,playerKey("front")).setOrigin(.5,1).setDepth(5);
-    catSpr=this.add.image(301,297,catKey(false)).setDepth(5);
-    this.cameras.main.setBounds(0,0,W,H);
+    // player + cat — player origin at the feet; cat follows (global, kept across zones)
+    player=this.add.image(HOME_SPAWN[0],HOME_SPAWN[1],playerKey("front")).setOrigin(.5,1).setDepth(5);
+    catSpr=this.add.image(HOME_SPAWN[0]-19,HOME_SPAWN[1]-3,catKey(false)).setDepth(5);
+    this.cameras.main.setBounds(0,0,ZONE_W,ZONE_H);
     this.cameras.main.startFollow(player,true,0.08,0.08);
-    this.tweens.add({targets:animalSpr, y:"+=2", duration:900, yoyo:true, repeat:-1, ease:"Sine.easeInOut", stagger:120});
     keys=this.input.keyboard.addKeys("W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT,X,C,F,M,E");
     this.input.keyboard.on("keydown-X",()=>doInteract());
     this.input.keyboard.on("keydown-C",()=>doTool());
@@ -1612,9 +1455,8 @@ class MainScene extends Phaser.Scene{
     this.input.keyboard.on("keydown-M",()=>{ if(!G.started)return; renderMapNPCs(); toggleOverlay("ovMap"); });
     this.input.keyboard.on("keydown-E",()=>{ if(!G.started) return; if(document.getElementById("ovIntro").classList.contains("open")){ closeIntro(); } else toggleOverlay("ovMenu"); });
     this.input.on("pointerdown",p=>{ if(paused) return; const wx=p.worldX, wy=p.worldY; if(Math.hypot(wx-player.x,wy-player.y)>17) targetPos={x:wx,y:wy}; });
-    G.plots.forEach((p,i)=>refreshPlot(i));
-    G.homePlots.forEach((p,i)=>refreshHomePlot(i)); refreshHouse(); refreshCradle(); refreshChildSprites();
-    applyBundleVisuals(); refreshBundleWorkers(); scheduleNPCs();
+    // the valley is four zones now — build the saved (or starting) one
+    loadZone(G._savedZone||"home",(typeof G._savedPX==="number")?G._savedPX:undefined,(typeof G._savedPY==="number")?G._savedPY:undefined);
     updateHUD();
   }
   update(time,delta){
@@ -1635,11 +1477,21 @@ class MainScene extends Phaser.Scene{
     if(vx||vy){ targetPos=null; }
     else if(targetPos){ const dx=targetPos.x-player.x, dy=targetPos.y-player.y, d=Math.hypot(dx,dy); if(d<4) targetPos=null; else { vx=dx/d*sp; vy=dy/d*sp; } }
     let nx=player.x+vx, ny=player.y+vy;
-    nx=Phaser.Math.Clamp(nx,13,W-13); ny=Phaser.Math.Clamp(ny,16,H-11);
+    nx=Phaser.Math.Clamp(nx,13,ZONE_W-13); ny=Phaser.Math.Clamp(ny,16,ZONE_H-11);
     const blocked=(x,y)=>solids.some(s=>x>s.x-5&&x<s.x+s.w+5&&y>s.y-3&&y<s.y+s.h+4);
     if(!blocked(nx,player.y)) player.x=nx;
     if(!blocked(player.x,ny)) player.y=ny;
     player.setDepth(5+player.y/1000);
+    // zone exits — walk off a marked edge to cross into the next zone
+    if(!zoneCrossing){
+      const ex=ZONE_EXITS[currentZone]||[];
+      for(const e of ex){
+        if(e.edge==="east"&&player.x>=ZONE_W-14&&player.y>=e.yMin&&player.y<=e.yMax){ zoneCross(e.to,e.spawn[0],e.spawn[1]); break; }
+        if(e.edge==="west"&&player.x<=14&&player.y>=e.yMin&&player.y<=e.yMax){ zoneCross(e.to,e.spawn[0],e.spawn[1]); break; }
+        if(e.edge==="north"&&player.y<=17&&player.x>=e.xMin&&player.x<=e.xMax){ zoneCross(e.to,e.spawn[0],e.spawn[1]); break; }
+        if(e.edge==="south"&&player.y>=ZONE_H-12&&player.x>=e.xMin&&player.x<=e.xMax){ zoneCross(e.to,e.spawn[0],e.spawn[1]); break; }
+      }
+    }
     // v2 walk animation — direction frames from the sprite set
     if(vy>0) facing="down"; else if(vy<0) facing="up"; else if(vx<0) facing="left"; else if(vx>0) facing="right";
     let frame="front";
@@ -1667,6 +1519,285 @@ class MainScene extends Phaser.Scene{
     if(nearAct){ promptEl.innerHTML="✦ "+nearAct.label.replace(" — "," — <b>"); promptEl.innerHTML=nearAct.label.replace(/(X|C):/g,"<b>$1:</b>"); promptEl.textContent=""; promptEl.innerHTML="✦ "+nearAct.label.replace(/(X|C):/g,"<b>$1:</b>"); promptEl.classList.add("show"); }
     else promptEl.classList.remove("show");
   }
+}
+
+/* ============================== ZONE BUILDERS ==============================
+   Each builder adds ONLY its zone's ground, props, interactables, solids,
+   NPCs and sprites, in that zone's local coordinates (0..960, 0..640).
+   Every zone-created GameObject goes through zAdd() so loadZone() can
+   destroy the whole zone when the player crosses into another one. */
+function zAdd(s,x,y,k){ const o=s.add.image(x,y,k); zoneObjs.push(o); return o; }
+function groundTiles(s){
+  for(let ty=0;ty<ZONE_H/T;ty++) for(let tx=0;tx<ZONE_W/T;tx++){ const h=(tx*31+ty*17)%23; const k=h===0?"grass_flowers":(h===5||h===11)?"grass_tufts":(h%3===0?"grass_b":(h%3===1?"grass_c":"grass")); zAdd(s,tx*T+T/2,ty*T+T/2,k).setDepth(0); }
+}
+function fenceEdges(s,gaps){
+  gaps=gaps||{};
+  for(let tx=0;tx<ZONE_W/T;tx++){ const cx=tx*T+T/2; if(!(gaps.top&&cx>=gaps.top[0]&&cx<=gaps.top[1])) zAdd(s,cx,16,"fence_h").setDepth(1); if(!(gaps.bottom&&cx>=gaps.bottom[0]&&cx<=gaps.bottom[1])) zAdd(s,cx,ZONE_H-16,"fence_h").setDepth(1); }
+  for(let ty=0;ty<ZONE_H/T;ty++){ const cy=ty*T+T/2; if(!(gaps.left&&cy>=gaps.left[0]&&cy<=gaps.left[1])) zAdd(s,16,cy,"fence_v").setDepth(1); if(!(gaps.right&&cy>=gaps.right[0]&&cy<=gaps.right[1])) zAdd(s,ZONE_W-16,cy,"fence_v").setDepth(1); }
+}
+function exitPath(s,edge){
+  /* A dirt path to the edge + a signpost, so each crossing is easy to find. */
+  if(edge==="east"){ for(let tx=24;tx<30;tx++){ zAdd(s,tx*T+T/2,9*T+T/2,"dirt_path").setDepth(0); zAdd(s,tx*T+T/2,10*T+T/2,"dirt_path").setDepth(0); } zAdd(s,920,320,"signpost").setDepth(3); }
+  if(edge==="west"){ for(let tx=0;tx<6;tx++){ zAdd(s,tx*T+T/2,9*T+T/2,"dirt_path").setDepth(0); zAdd(s,tx*T+T/2,10*T+T/2,"dirt_path").setDepth(0); } zAdd(s,40,320,"signpost").setDepth(3); }
+  if(edge==="north"){ for(let ty=0;ty<6;ty++) zAdd(s,20*T+T/2,ty*T+T/2,"dirt_path").setDepth(0); zAdd(s,660,40,"signpost").setDepth(3); }
+  if(edge==="south"){ for(let ty=14;ty<20;ty++) zAdd(s,20*T+T/2,ty*T+T/2,"dirt_path").setDepth(0); zAdd(s,660,600,"signpost").setDepth(3); }
+}
+function addTree(s,key,x,y){ zAdd(s,x,y,key).setOrigin(.5,1).setDepth(3); solid(x-12,y-9,24,27); }
+function buildZoneHome(s){
+  groundTiles(s);
+  fenceEdges(s,{right:[296,344]});
+  exitPath(s,"east");
+  addTree(s,"tree_olive",60,345);
+  [[40,283],[120,283]].forEach(p=>zAdd(s,p[0],p[1],"lantern").setOrigin(.5,1).setDepth(3));
+  // house + yard
+  houseSpr=zAdd(s,80,235,anyHomeUpgrade()?"house_upgraded":"house").setDepth(2); solid(35,212,93,64);
+  const debrisKeys=["debris_weeds","debris_stones","debris_branches"];
+  G.plots.forEach((p,i)=>{ const col=i%3,row=Math.floor(i/3); const x=Math.round((64+col*56)*2/3), y=Math.round((452+row*56)*2/3);
+    const sp=zAdd(s,x,y,"tilled_dry").setDepth(1); plotSpr.push(sp);
+    const cs=zAdd(s,x,y-3,"crop_mint_1").setDepth(2).setVisible(false); cropSpr.push(cs);
+    const ds=zAdd(s,x,y,debrisKeys[i%3]).setDepth(3); debrisSpr.push(ds);
+    addInt(x,y,"Soil plot — C: clear / plant / water / harvest",()=>usePlot(i),31); });
+  // home garden — 4 plots beside the house (orchard row, herb bed, flower bed, crop plot)
+  G.homePlots.forEach((p,i)=>{ const x=170+i*35, y=320;
+    const sp=zAdd(s,x,y,"tilled_dry").setDepth(1); homePlotSpr.push(sp);
+    if(p.kind==="dates") zAdd(s,x,y,"orchard_row").setDepth(1);
+    if(p.kind==="herb") zAdd(s,x,y,"herb_bed").setDepth(1);
+    if(p.kind==="flower") zAdd(s,x,y,"flower_bed").setDepth(1);
+    const cs=zAdd(s,x,y-3,"crop_mint_1").setDepth(2).setVisible(false); homeCropSpr.push(cs);
+    addInt(x,y,HOME_PLOT_DEFS[i].name+" — C: water / harvest",()=>useHomePlot(i),31); });
+  cradleSpr=zAdd(s,140,262,"cradle").setDepth(3).setVisible(false);
+  // mailbox by the house door (Stardew farm-mailbox style)
+  zAdd(s,152,261,"mailbox_v2").setDepth(3);
+  addInt(152,261,"Mailbox — X: read today's letter",()=>readMail(),32);
+  // goals board by the house
+  zAdd(s,200,240,"noticeboard").setDepth(2).setScale(2/3);
+  addInt(200,240,"Goals Board — X: your goals & Completion of Care",()=>openJournal("goals"),32);
+  // house door sleep
+  addInt(80,283,"Your House — X: sleep & start a new day",()=>sleep(),33);
+  // animal pen (mid left)
+  const pen={x0:44,y0:112,x1:144,y1:185};
+  [[pen.x0,pen.y0],[pen.x1,pen.y0],[pen.x0,pen.y1],[pen.x1,pen.y1]].forEach(p=>zAdd(s,p[0],p[1],"fence_post").setDepth(1));
+  [76,108].forEach(x=>{ zAdd(s,x,pen.y0,"fence_h").setDepth(1); zAdd(s,x,pen.y1,"fence_h").setDepth(1); });
+  zAdd(s,pen.x0,148,"fence_v").setDepth(1); zAdd(s,pen.x1,148,"fence_v").setDepth(1);
+  const an=[["animal_chicken",70,137],["animal_chicken",100,159],["animal_goat",80,167],["animal_sheep",112,137],["hive",131,159]];
+  an.forEach(a=>{ const sp=zAdd(s,a[1],a[2],a[0]).setDepth(3).setScale(2/3); animalSpr.push(sp); });
+  solid(44,112,100,73);
+  addInt(93,191,"Animal Pen — X: visit · C: feed",()=>visitAnimals(),40);
+  // glasshouse (locked visual until its bundle is done)
+  zAdd(s,440,313,"glasshouse").setDepth(2).setScale(2/3); solid(392,280,100,67);
+  addInt(440,357,"Glasshouse — X: look inside",()=>{ if(G.bundles.glasshouse.done){ toast("🌱 The glasshouse hums with green — crops here grow in every month once planted at the yard (bundle complete)."); } else { toast("🔒 The glasshouse is waiting on its bundle — stone, lime and coins. See the Restoration Board."); } },37);
+  // guest house (legacy) on the home plot
+  legacySpr.guestHouse=zAdd(s,170,235,"guest_house").setDepth(2).setVisible(!!G.bundles.guestHouse.done);
+  addInt(170,235,"Guest House — X: visit",()=>talkGuestHouse(),36);
+  // orchard (Tariq's trees)
+  addTree(s,"tree_olive",220,440); addTree(s,"tree_date",280,440); addTree(s,"tree_olive",340,440);
+  addInt(280,470,"Orchard — X: Tariq's trees",()=>{ showDlg("The Orchard","🌴","Tariq's orchard — dates and olives, tended tree by tree. The trees give if you tend them.",[{t:"Walk among the trees",fn:closeDlg}]); },36);
+  legacySpr.orchard=zAdd(s,380,440,"orchard_row").setDepth(2).setVisible(!!G.bundles.orchard.done);
+  addInt(380,440,"Orchard Expansion — X: Tariq's grafted rows",()=>talkOrchard(),36);
+  legacySpr.endowmentGarden=zAdd(s,880,540,"endowment_garden").setDepth(2).setVisible(!!G.bundles.endowmentGarden.done);
+  addInt(880,540,"Endowment Garden — X: the sadaqah garden",()=>talkEndowment(),36);
+  // workshop (Bilal's)
+  zAdd(s,648,440,"workshop").setDepth(2); solid(608,408,80,64);
+  addInt(648,484,"Bilal's Workshop — X: visit",()=>{ showDlg("Bilal's Workshop","🔨","Sawdust, stone and steady work. Bilal builds the valley one wall at a time — and one day, young Yusuf will be his apprentice.",[{t:"Look around",fn:closeDlg}]); },36);
+  // farm machines: rosewater, honey, olive press
+  const machineSpots=[["rosewater","machine_rosewater",680,520],["honey","machine_honey",160,200],["olivepress","machine_olivepress",360,470]];
+  machineSpots.forEach(ms=>{ zAdd(s,ms[2],ms[3],ms[1]).setDepth(3); addInt(ms[2],ms[3],MACHINES[ms[0]].name+" — X: work the machine",()=>openMachine(ms[0]),34); });
+  // garden-wall shortcut signpost (hidden until the wall bundle is done)
+  signSpr.home=zAdd(s,176,320,"signpost").setDepth(3).setVisible(false);
+  addInt(176,320,"Shortcut — X: walk the garden-wall path",()=>useShortcut("home"),32);
+  s.tweens.add({targets:animalSpr, y:"+=2", duration:900, yoyo:true, repeat:-1, ease:"Sine.easeInOut", stagger:120});
+}
+function buildZoneMosque(s){
+  groundTiles(s);
+  fenceEdges(s,{left:[296,344],right:[296,344],top:[636,684]});
+  exitPath(s,"west"); exitPath(s,"east"); exitPath(s,"north");
+  // courtyard: stone row in front of the masjid, dirt path crossing it north–south
+  for(let tx=0;tx<20;tx++){ zAdd(s,tx*T+T/2,7*T+T/2,"stone_courtyard").setDepth(0); }
+  for(let ty=0;ty<13;ty++){ zAdd(s,9*T+T/2,ty*T+T/2,"dirt_path").setDepth(0); zAdd(s,10*T+T/2,ty*T+T/2,"dirt_path").setDepth(0); }
+  // gravel digging ground at the cistern works
+  for(let ty=10;ty<12;ty++) for(let tx=10;tx<14;tx++) zAdd(s,tx*T+T/2,ty*T+T/2,"gravel").setDepth(0);
+  // masjid (top centre) — Ottoman stone, grey-blue domes, two pencil minarets
+  zAdd(s,320,72,"masjid").setDepth(2); solid(208,40,224,93);
+  [[232,140],[408,140]].forEach(p=>zAdd(s,p[0],p[1],"lantern").setOrigin(.5,1).setDepth(3));
+  [[272,140],[368,140]].forEach(p=>zAdd(s,p[0],p[1],"flower_pot").setOrigin(.5,1).setDepth(3));
+  // trees around the masjid and cistern
+  addTree(s,"tree_pine",541,89); addTree(s,"tree_cherry",467,199); addTree(s,"tree_olive",688,120);
+  addTree(s,"tree_pine",848,80); addTree(s,"tree_cherry",768,200); addTree(s,"tree_pine",896,176); addTree(s,"tree_date",720,208);
+  // cistern (top right) — the old well at its heart
+  zAdd(s,537,131,"well").setDepth(2).setScale(2); solid(491,100,93,64);
+  addInt(537,175,"Old Cistern — X: gathering place",()=>talkCistern(),37);
+  // cistern works digging ground: stone, clay & lime piles
+  zAdd(s,373,347,"debris_stones").setDepth(2);
+  zAdd(s,411,360,"claypile").setDepth(2).setScale(2/3);
+  zAdd(s,347,371,"limepile").setDepth(2).setScale(2/3);
+  solid(331,331,113,53);
+  addInt(381,353,"Cistern Works — C: gather (stone → clay → lime rotation)",()=>useGather(),39);
+  // listening corner bench (left of masjid)
+  zAdd(s,159,159,"bench").setDepth(2);
+  addInt(159,159,"Listening Corner — X: sit & listen",()=>listeningCorner(),35);
+  // restoration board by masjid door
+  zAdd(s,373,149,"board").setDepth(3).setScale(2/3);
+  addInt(373,149,"Restoration Board — X: bundles",()=>{ openJournal("bundles"); },32);
+  // masjid door — prayer hall, Taraweeh in Ramadan, Laylat al-Qadr on day 27
+  addInt(320,140,"Masjid Door — X: enter the prayer hall",()=>talkMasjid(),34);
+  // noticeboard by the masjid steps
+  zAdd(s,262,152,"noticeboard").setDepth(3);
+  addInt(262,152,"Noticeboard — X: requests, forecast & focus",()=>openBoard(),34);
+  // wudu area (fountain) + library shelf
+  zAdd(s,456,168,"fountain").setDepth(2); solid(436,156,40,44);
+  addInt(456,168,"Wudu Area — X: look (restores with its bundle)",()=>talkWudu(),36);
+  shelfSpr=zAdd(s,208,208,"shelf_empty").setDepth(2);
+  addInt(208,208,"Library — X: browse the shelves",()=>talkLibrary(),34);
+  // Masjid Archive shelf (beside the library shelf)
+  zAdd(s,248,240,"archive_shelf").setDepth(2);
+  zAdd(s,248,224,"archive_item").setDepth(3);
+  addInt(248,240,"Masjid Archive — X: donate & browse",()=>openArchive(),34);
+  // library second room (legacy)
+  legacySpr.libraryRoom2=zAdd(s,280,235,"library_room2").setDepth(2).setVisible(!!G.bundles.libraryRoom2.done);
+  addInt(280,235,"Library Second Room — X: visit",()=>talkLibrary2(),34);
+  // minaret lookout (right of the masjid)
+  addInt(440,140,"Minaret — X: climb the lookout",()=>talkMinaret(),34);
+  zAdd(s,440,120,"scaffold").setDepth(3).setVisible(!G.bundles.minaret.done);
+  // Ramadan string lights over the masjid (lit by the dome finale) + Eid bunting
+  stringLightsSpr=zAdd(s,320,36,"string_lights").setDepth(3).setVisible(G.finaleYear===G.year);
+  zAdd(s,320,232,"eid_bunting").setDepth(3).setVisible(G.month===eidFitrMonth(G.year)&&G.day===1);
+  // garden-wall tiles (hidden until the wall bundle is done)
+  for(let tx=1;tx<7;tx++){ const t=zAdd(s,tx*T+T/2,368,"stone_wall").setDepth(1).setVisible(false); wallTiles.push(t); }
+  // bundle workers: Bilal + Hamza appear at a bundle site while work is in progress
+  workerSpr.bilal=zAdd(s,160,368,"bilal_front").setOrigin(.5,1).setDepth(4).setVisible(false);
+  workerSpr.hamza=zAdd(s,192,368,"hamza_front").setOrigin(.5,1).setDepth(4).setVisible(false);
+  // garden-wall shortcut signpost (hidden until the wall bundle is done)
+  signSpr.masjid=zAdd(s,320,368,"signpost").setDepth(3).setVisible(false);
+  addInt(320,368,"Shortcut — X: walk the garden-wall path",()=>useShortcut("masjid"),32);
+}
+function buildZoneTown(s){
+  groundTiles(s);
+  fenceEdges(s,{left:[296,344]});
+  exitPath(s,"west");
+  // shaykh's house (top-left) — counsel
+  zAdd(s,104,56,"shaykh_house").setDepth(2); solid(56,24,96,72);
+  addInt(104,112,"Shaykh Abdullah's House — X: counsel (costs one prayer block)",()=>openCounsel(),36);
+  // townspeople's homes row (bottom centre)
+  zAdd(s,240,560,"house").setDepth(2); solid(194,528,93,64);
+  zAdd(s,400,560,"house_b").setDepth(2); solid(354,528,93,64);
+  zAdd(s,560,560,"house_c").setDepth(2); solid(514,528,93,64);
+  // trees among the homes
+  addTree(s,"tree_olive",700,470); addTree(s,"tree_pine",656,560); addTree(s,"tree_cherry",880,600); addTree(s,"tree_date",792,556);
+  // stall (Abu Khalid's)
+  zAdd(s,513,235,"stall").setDepth(2); solid(468,204,93,61);
+  zAdd(s,455,262,"barrel").setOrigin(.5,1).setDepth(3);
+  addInt(513,275,"Abu Khalid's Stall — X: shop & sell",()=>openShop(),37);
+  // community kitchen (east of the courtyard)
+  zAdd(s,752,256,"kitchen").setDepth(2); solid(704,224,96,72);
+  zAdd(s,712,300,"stove").setDepth(3).setScale(2/3);
+  addInt(752,312,"Community Kitchen — X: cook with Hassan",()=>openCook(),38);
+  zAdd(s,800,340,"sweets_tray").setDepth(3);
+  // kitchen-row machines: preserves, oven, dehydrator
+  const machineSpots=[["preserves","machine_preserves",720,336],["oven","machine_oven",776,336],["dehydrator","machine_dehydrator",824,336]];
+  machineSpots.forEach(ms=>{ zAdd(s,ms[2],ms[3],ms[1]).setDepth(3); addInt(ms[2],ms[3],MACHINES[ms[0]].name+" — X: work the machine",()=>openMachine(ms[0]),34); });
+  // community hall + youth space (legacy)
+  legacySpr.communityHall=zAdd(s,500,90,"community_hall").setDepth(2).setVisible(!!G.bundles.communityHall.done);
+  addInt(500,90,"Community Hall — X: visit",()=>talkCommunityHall(),36);
+  legacySpr.youthSpace=zAdd(s,250,180,"youth_space").setDepth(2).setVisible(!!G.bundles.youthSpace.done);
+  addInt(250,180,"Youth Space — X: visit",()=>talkYouthSpace(),34);
+  // farmers' row stalls (legacy)
+  legacySpr.farmersRow=zAdd(s,560,360,"stall_bakery").setDepth(2).setVisible(!!G.bundles.farmersRow.done);
+  legacySpr.farmersRowHerbs=zAdd(s,600,360,"stall_herbs").setDepth(2).setVisible(!!G.bundles.farmersRow.done);
+  legacySpr.farmersRowPlayer=zAdd(s,640,360,"stall_player").setDepth(2).setVisible(!!G.bundles.farmersRow.done);
+  addInt(600,360,"Farmers' Row — X: the market stalls",()=>talkFarmersRow(),40);
+  // garden-wall shortcut signpost (hidden until the wall bundle is done)
+  signSpr.market=zAdd(s,560,320,"signpost").setDepth(3).setVisible(false);
+  addInt(560,320,"Shortcut — X: walk the garden-wall path",()=>useShortcut("market"),32);
+}
+function buildZoneOutskirts(s){
+  groundTiles(s);
+  fenceEdges(s,{bottom:[636,684]});
+  exitPath(s,"south");
+  // woods floor (south-east) + hunting-ground floor (north-east)
+  for(let ty=13;ty<20;ty++) for(let tx=20;tx<28;tx++){ if((tx*7+ty*13)%5===0) zAdd(s,tx*T+T/2,ty*T+T/2,"forest_floor").setDepth(0); }
+  for(let ty=1;ty<7;ty++) for(let tx=20;tx<28;tx++){ if((tx*11+ty*7)%4===0) zAdd(s,tx*T+T/2,ty*T+T/2,"forest_floor").setDepth(0); }
+  // river (east edge) + bank
+  for(let ty=3;ty<20;ty++){ for(let tx=28;tx<30;tx++){ zAdd(s,tx*T+T/2,ty*T+T/2,((tx+ty)%3===0)?"water_b":"water").setDepth(0); } zAdd(s,27*T+T/2,ty*T+T/2,"water_bank").setDepth(0); }
+  solid(28*T,3*T,2*T,17*T);
+  // pond (bottom right of the old map, now the outskirts pond)
+  for(let ty=9;ty<12;ty++) for(let tx=15;tx<19;tx++) zAdd(s,tx*T+T/2,ty*T+T/2,"water").setDepth(0);
+  solid(15*T,9*T,4*T,3*T);
+  addInt(496,280,"Pond — C: fish with timing",()=>startFishing(),36);
+  // river fishing spot (east bank) + Salim's ground
+  addInt(880,320,"River — C: fish with Salim",()=>startRiverFishing(),36);
+  // woods trees
+  addTree(s,"tree_pine",640,420); addTree(s,"tree_cherry",900,420); addTree(s,"tree_pine",640,600); addTree(s,"tree_olive",900,600);
+  // forage nodes (woods) + fallen-branch wood piles
+  FORAGE_NODES.forEach(nd=>{ const sp=zAdd(s,nd.x,nd.y,nd.tex).setDepth(2); forageSpr[nd.id]=sp; addInt(nd.x,nd.y,nd.plant+" — C: gather (fixed spot, regrows each morning)",()=>useForage(nd.id),30); });
+  WOOD_NODES.forEach(nd=>{ const sp=zAdd(s,nd.x,nd.y,"branch_pile").setDepth(2); woodSpr[nd.id]=sp; addInt(nd.x,nd.y,"Fallen branches — C: gather wood",()=>useWood(nd.id),30); });
+  // hunting grounds (north-east woods): deer + rabbit on fixed patrol paths
+  deerSpr=zAdd(s,720,120,"deer").setDepth(3);
+  s.tweens.add({targets:deerSpr,x:840,duration:9000,yoyo:true,repeat:-1,ease:"Sine.easeInOut"});
+  rabbitSpr=zAdd(s,800,180,"rabbit").setDepth(3);
+  s.tweens.add({targets:rabbitSpr,x:720,y:"-=8",duration:2600,yoyo:true,repeat:-1,ease:"Sine.easeInOut"});
+  addInt(768,128,"Hunting Grounds — X: stalk (zabiha first)",()=>openHunt(),40);
+}
+/* ---- Zone NPCs: one sprite + one talk interactable per NPC in this zone ---- */
+function createNPCSprite(k,x,y){
+  const tex=NPC_TEX[k]; if(!tex||!scene) return null;
+  const sp=scene.add.image(x,y,tex).setOrigin(.5,1).setDepth(4); zoneObjs.push(sp); npcSpr[k]=sp;
+  if(k==="nura"&&currentAct()<2&&G.year===1) sp.setVisible(false);
+  const it={x:x,y:y,label:(NPCINFO[k]?NPCINFO[k].name:k)+" — X: talk",fn:(()=>talkNPC(k)),r:36};
+  interactables.push(it); npcInt[k]=it;
+  return sp;
+}
+function removeNPCSprite(k){
+  const sp=npcSpr[k];
+  if(sp){ if(typeof sp.destroy==="function"){ try{ sp.destroy(); }catch(e){} } delete npcSpr[k]; }
+  const it=npcInt[k];
+  if(it){ const i=interactables.indexOf(it); if(i>=0) interactables.splice(i,1); delete npcInt[k]; }
+}
+/* ---- loadZone: tear down the old zone, build the new one, place the player ---- */
+function loadZone(zoneId, spawnX, spawnY){
+  if(!scene) return;
+  const z=ZONES[zoneId]||ZONES.home;
+  currentZone=z.id;
+  if(scene.tweens&&typeof scene.tweens.killAll==="function"){ try{ scene.tweens.killAll(); }catch(e){} }
+  zoneObjs.forEach(o=>{ if(o&&typeof o.destroy==="function"){ try{ o.destroy(); }catch(e){} } });
+  zoneObjs=[]; interactables=[]; solids=[];
+  plotSpr=[]; cropSpr=[]; debrisSpr=[]; homePlotSpr=[]; homeCropSpr=[];
+  forageSpr={}; woodSpr={}; signSpr={}; wallTiles=[]; workerSpr={}; legacySpr={};
+  npcSpr={}; npcInt={}; animalSpr=[]; houseSpr=null; cradleSpr=null; childSprs=[];
+  shelfSpr=null; deerSpr=null; rabbitSpr=null; stringLightsSpr=null;
+  targetPos=null; nearAct=null;
+  z.build(scene);
+  /* Zone-absent sprites: a read-only dummy so code that checks e.g.
+     signSpr.masjid.visible or legacySpr.communityHall.visible from another
+     zone reads false instead of throwing. Real sprites (this zone) win. */
+  ["masjid","market","home"].forEach(k=>{ if(!signSpr[k]) signSpr[k]=zoneSpriteDummy(); });
+  LEGACY_KEYS.forEach(k=>{ if(!legacySpr[k]) legacySpr[k]=zoneSpriteDummy(); });
+  if(!legacySpr.farmersRowHerbs) legacySpr.farmersRowHerbs=zoneSpriteDummy();
+  if(!legacySpr.farmersRowPlayer) legacySpr.farmersRowPlayer=zoneSpriteDummy();
+  const sx=(typeof spawnX==="number")?Phaser.Math.Clamp(spawnX,13,ZONE_W-13):z.spawn[0];
+  const sy=(typeof spawnY==="number")?Phaser.Math.Clamp(spawnY,16,ZONE_H-11):z.spawn[1];
+  if(player){ player.x=sx; player.y=sy; player.setTexture(playerKey("front")); }
+  if(catSpr){ catSpr.x=sx-19; catSpr.y=sy-3; catSpr.setTexture(catKey(false)); }
+  if(scene.cameras&&scene.cameras.main){ scene.cameras.main.setBounds(0,0,ZONE_W,ZONE_H); if(typeof scene.cameras.main.startFollow==="function") scene.cameras.main.startFollow(player,true,0.08,0.08); }
+  if(currentZone==="home"){ G.plots.forEach((p,i)=>refreshPlot(i)); G.homePlots.forEach((p,i)=>refreshHomePlot(i)); refreshHouse(); refreshCradle(); refreshChildSprites(); }
+  refreshLegacySprites();
+  scheduleNPCs();
+  refreshGenSprites();
+  spawnNewcomerSprites();
+  applyBundleVisuals(); refreshBundleWorkers();
+  updateHUD();
+}
+/* A stand-in for a sprite that lives in another zone: .visible always reads
+   false and setVisible() is a no-op, so zone-absent checks fail soft. */
+function zoneSpriteDummy(){ const d={}; Object.defineProperty(d,"visible",{get:function(){ return false; },configurable:true}); d.setVisible=function(){}; return d; }
+function zoneCross(to,sx,sy){
+  if(zoneCrossing) return; zoneCrossing=true;
+  const cam=scene&&scene.cameras&&scene.cameras.main;
+  const name=(ZONES[to]&&ZONES[to].name)||to;
+  const go=()=>{ loadZone(to,sx,sy); zoneCrossing=false; banner("🚶 "+name); };
+  if(cam&&typeof cam.fadeOut==="function"){
+    try{ cam.fadeOut(180); setTimeout(()=>{ go(); if(cam&&typeof cam.fadeIn==="function") cam.fadeIn(180); },200); return; }catch(e){ /* fall through to a plain switch */ }
+  }
+  go();
 }
 function blockedAt(x,y){ return solids.some(s=>x>s.x-5&&x<s.x+s.w+5&&y>s.y-3&&y<s.y+s.h+4); }
 function doInteract(){ if(paused||!nearAct) return; nearAct.fn(); }
@@ -1858,46 +1989,58 @@ function checkMilestone(k,prev){
 function checkMeet(k){ const t=G.tasks.find(t=>t.id==="meet"); if(!t||t.done)return; t.prog[k]=true; if(t.prog.yusuf&&t.prog.maryam){ t.done=true; G.coins+=15; addLedger("Reward — Meet the neighbours",15); setTimeout(()=>toast("✅ Task complete: Meet the neighbours (+15 coins)"),300); updateHUD(); } }
 /* ---- NPC schedules (prayer blocks; rain changes Salim & Fatimah) ---- */
 const NPC_SCHED={
-  abdullah:{home:[104,122], spots:{2:[320,172],4:[320,172]}},
-  hassan:{home:[800,324], spots:{0:[560,300]}},
-  salim:{home:[848,320], spots:{}, rain:[560,300]},
-  fatimah:{home:[720,484], spots:{2:[540,300],3:[540,300]}, rain:[780,324]},
-  hamza:{home:[380,184], spots:{1:[430,380],2:[430,380]}},
-  safiyyah:{home:[240,600], spots:{1:[320,200],2:[320,200],3:[240,600]}},
-  omar:{home:[560,300], spots:{0:[513,320],2:[513,320]}},
-  aisha:{home:[208,240], spots:{1:[208,240],2:[208,240]}},
-  khadijah:{home:[760,320], spots:{0:[760,320],2:[560,300]}},
-  karim:{home:[600,280], spots:{0:[600,280],3:[560,300]}},
-  tariq:{home:[300,470], spots:{1:[300,470],2:[300,470]}},
-  sakina:{home:[400,600], spots:{2:[760,320],3:[400,600]}},
-  idris:{home:[168,244], spots:{1:[104,140],3:[208,240]}},
-  zaynab:{home:[560,600], spots:{2:[320,200],3:[560,600]}},
-  nura:{home:[440,200], spots:{1:[560,300],2:[440,200]}},
-  umm_layla:{home:[440,604], spots:{0:[400,600],2:[560,300]}},
-  abu_omar:{home:[280,604], spots:{1:[300,470],2:[300,470]}},
-  layla:{home:[200,300], spots:{1:[120,300],3:[200,320]}},
-  maryam_y:{home:[208,280], spots:{2:[208,280],3:[320,200]}},
-  yusuf_y:{home:[600,440], spots:{1:[600,440],2:[380,200]}},
-  bilal:{home:[179,327], spots:{}},
+  yusuf:{home:{zone:"mosque",x:320,y:172}, spots:{}},
+  maryam:{home:{zone:"home",x:220,y:275}, spots:{}},
+  khalid:{home:{zone:"town",x:513,y:299}, spots:{}},
+  abdullah:{home:{zone:"town",x:104,y:122}, spots:{2:{zone:"mosque",x:320,y:172},4:{zone:"mosque",x:320,y:172}}},
+  hassan:{home:{zone:"town",x:800,y:324}, spots:{0:{zone:"town",x:560,y:300}}},
+  salim:{home:{zone:"outskirts",x:848,y:320}, spots:{}, rain:{zone:"town",x:560,y:300}},
+  fatimah:{home:{zone:"outskirts",x:720,y:484}, spots:{2:{zone:"town",x:540,y:300},3:{zone:"town",x:540,y:300}}, rain:{zone:"town",x:780,y:324}},
+  hamza:{home:{zone:"mosque",x:380,y:184}, spots:{1:{zone:"mosque",x:430,y:380},2:{zone:"mosque",x:430,y:380}}},
+  safiyyah:{home:{zone:"town",x:240,y:600}, spots:{1:{zone:"mosque",x:320,y:200},2:{zone:"mosque",x:320,y:200},3:{zone:"town",x:240,y:600}}},
+  omar:{home:{zone:"town",x:560,y:300}, spots:{0:{zone:"town",x:513,y:320},2:{zone:"town",x:513,y:320}}},
+  aisha:{home:{zone:"mosque",x:208,y:240}, spots:{1:{zone:"mosque",x:208,y:240},2:{zone:"mosque",x:208,y:240}}},
+  khadijah:{home:{zone:"town",x:760,y:320}, spots:{0:{zone:"town",x:760,y:320},2:{zone:"town",x:560,y:300}}},
+  karim:{home:{zone:"town",x:600,y:280}, spots:{0:{zone:"town",x:600,y:280},3:{zone:"town",x:560,y:300}}},
+  tariq:{home:{zone:"home",x:300,y:470}, spots:{1:{zone:"home",x:300,y:470},2:{zone:"home",x:300,y:470}}},
+  sakina:{home:{zone:"town",x:400,y:600}, spots:{2:{zone:"town",x:760,y:320},3:{zone:"town",x:400,y:600}}},
+  idris:{home:{zone:"mosque",x:168,y:244}, spots:{1:{zone:"town",x:104,y:140},3:{zone:"mosque",x:208,y:240}}},
+  zaynab:{home:{zone:"town",x:560,y:600}, spots:{2:{zone:"mosque",x:320,y:200},3:{zone:"town",x:560,y:600}}},
+  nura:{home:{zone:"mosque",x:440,y:200}, spots:{1:{zone:"town",x:560,y:300},2:{zone:"mosque",x:440,y:200}}},
+  umm_layla:{home:{zone:"town",x:440,y:604}, spots:{0:{zone:"town",x:400,y:600},2:{zone:"town",x:560,y:300}}},
+  abu_omar:{home:{zone:"town",x:280,y:604}, spots:{1:{zone:"home",x:300,y:470},2:{zone:"home",x:300,y:470}}},
+  layla:{home:{zone:"home",x:200,y:300}, spots:{1:{zone:"home",x:120,y:300},3:{zone:"home",x:200,y:320}}},
+  maryam_y:{home:{zone:"mosque",x:208,y:280}, spots:{2:{zone:"mosque",x:208,y:280},3:{zone:"mosque",x:320,y:200}}},
+  yusuf_y:{home:{zone:"home",x:600,y:440}, spots:{1:{zone:"home",x:600,y:440},2:{zone:"mosque",x:380,y:200}}},
+  bilal:{home:{zone:"home",x:179,y:327}, spots:{}},
   /* Phase D part 2: the new household stays by the guest house on your plot. */
-  huda:{home:[240,300], spots:{2:[320,200]}},
-  yasir:{home:[260,300], spots:{1:[200,300]}},
+  huda:{home:{zone:"home",x:240,y:300}, spots:{2:{zone:"mosque",x:320,y:200}}},
+  yasir:{home:{zone:"home",x:260,y:300}, spots:{1:{zone:"home",x:200,y:300}}},
 };
 function npcSpot(k){
   const s=NPC_SCHED[k]; if(!s) return null;
-  if((G.weather==="Rainy"||G.weather==="Storm")&&s.rain) return s.rain;
-  return s.spots[G.prayerIdx]||s.home;
+  let spot=null;
+  if((G.weather==="Rainy"||G.weather==="Storm")&&s.rain) spot=s.rain;
+  else spot=s.spots[G.prayerIdx]||s.home;
+  if(!spot) return null;
+  return {zone:spot.zone,x:spot.x,y:spot.y,0:spot.x,1:spot.y};
 }
 function scheduleNPCs(){
   if(!scene) return;
-  for(const k in NPC_SCHED){
-    const sp=npcSpr[k]; if(!sp) continue;
-    const t=npcSpot(k); if(!t) continue;
-    if(Math.hypot(sp.x-t[0],sp.y-t[1])<4) continue;
-    const dist=Math.hypot(sp.x-t[0],sp.y-t[1]);
+  for(const k in NPCINFO){
+    const spot=npcSpot(k); if(!spot) continue;
+    if((k==="huda"||k==="yasir")&&!G.generation.newHouseholdYear){ removeNPCSprite(k); continue; }
+    if(spot.zone!==currentZone){ removeNPCSprite(k); continue; }
+    let sp=npcSpr[k];
+    if(!sp){ sp=createNPCSprite(k,spot.x,spot.y); if(!sp) continue; if(k==="nura"&&currentAct()<2&&G.year===1) sp.setVisible(false); continue; }
+    if(k==="nura"&&currentAct()<2&&G.year===1){ sp.setVisible(false); continue; }
+    sp.setVisible(true);
+    if(Math.hypot(sp.x-spot.x,sp.y-spot.y)<4) continue;
+    const dist=Math.hypot(sp.x-spot.x,sp.y-spot.y);
     sp.setTexture(k+"_walk_a");
-    scene.tweens.add({targets:sp,x:t[0],y:t[1],duration:Math.min(9000,dist*14),onComplete:()=>{ sp.setTexture(k+"_front"); }});
+    scene.tweens.add({targets:sp,x:spot.x,y:spot.y,duration:Math.min(9000,dist*14),onComplete:()=>{ sp.setTexture(k+"_front"); refreshGenSprites(); }});
   }
+  refreshGenSprites();
 }
 /* ---- Counsel (shaykh's house — a visit costs one prayer block) ---- */
 function openCounsel(){ paused=true; document.getElementById("ovCounsel").classList.add("open"); document.getElementById("btnCounselMarriage").style.display=marriageCandidates8().length?"block":"none"; }
@@ -2065,11 +2208,11 @@ function refreshGenSprites(){
 }
 /* ---- Phase D part 2: the new household's sprites (created when they arrive) ---- */
 function spawnNewcomerSprites(){
-  if(!scene||npcSpr.huda||!G.generation.newHouseholdYear) return;
-  const h=scene.add.image(240,300,"newcomer_huda_front").setOrigin(.5,1).setDepth(4); npcSpr.huda=h;
-  addInt(240,300,"Huda — X: talk",()=>talkNPC("huda"),36);
-  const y=scene.add.image(260,300,"newcomer_yasir_front").setOrigin(.5,1).setDepth(4); npcSpr.yasir=y;
-  addInt(260,300,"Yasir — X: talk",()=>talkNPC("yasir"),36);
+  if(!scene||!G.generation.newHouseholdYear) return;
+  if(currentZone!=="home") return;
+  /* Huda & Yasir are owned by the zone NPC system now (loadZone/scheduleNPCs
+     create their sprites at their guest-house spot); make sure they exist. */
+  scheduleNPCs();
 }
 /* ---- Phase D part 2: legacy building dialogues ---- */
 function talkGuestHouse(){ showDlg("The Guest House","🏠", G.bundles.guestHouse.done?"A second building on your own plot — visitors and newcomers stay properly here. Huda and Yasir arrived through it, and a new arrival storyline opens most years.":"🔒 The guest house waits on its bundle — stone, wood and coins, from Year Two. See the Restoration Board.",[{t:"See the bundles",fn:()=>{closeDlg();openJournal("bundles");}},{t:"Step back",fn:closeDlg,alt:true}]); }
@@ -2164,12 +2307,12 @@ function addChild(name, gender){
   updateHUD();
 }
 function refreshChildSprites(){
-  if(!scene) return;
+  if(!scene||currentZone!=="home") return;
   childSprs.forEach(s=>{ if(s&&s.setVisible) s.setVisible(false); });
   G.children.forEach((c,i)=>{
     const key=childStageKey(c); if(!key) return; /* babies stay in the cradle */
     let sp=childSprs[i];
-    if(!sp){ sp=scene.add.image(150+i*40,285,key).setOrigin(.5,1).setDepth(4); childSprs[i]=sp; addInt(150+i*40,285,c.name+" — X: spend time together",(()=>{ const idx=i; return ()=>talkChild(idx); })(),34); }
+    if(!sp){ sp=scene.add.image(150+i*40,285,key).setOrigin(.5,1).setDepth(4); childSprs[i]=sp; zoneObjs.push(sp); addInt(150+i*40,285,c.name+" — X: spend time together",(()=>{ const idx=i; return ()=>talkChild(idx); })(),34); }
     sp.setTexture(key); sp.setVisible(true);
   });
 }
@@ -2255,6 +2398,8 @@ function sleep(auto){
   checkFestivals();
   checkFinale();
   checkEnding();
+  /* The new day starts at home — Stardew-style, at the house door. */
+  loadZone("home",HOME_SPAWN[0],HOME_SPAWN[1]);
 }
 /* ---- Fishing (skill timing) ---- */
 let fishAnim=null, fishPos=0, fishDir=1;
@@ -2643,17 +2788,18 @@ function talkMasjid(){
 }
 function useShortcut(from){
   if(!G.bundles.wall.done){ toast("🔒 The shortcut paths open once the garden wall is rebuilt."); return; }
-  const dests={masjid:[320,340],market:[560,300],home:[176,300]};
-  const opts=Object.keys(dests).filter(d=>d!==from).map(d=>({t:"Walk to the "+d, fn:()=>{ closeDlg(); player.x=dests[d][0]; player.y=dests[d][1]; targetPos=null; banner("🚶 You walk the garden-wall shortcut to the "+d+"."); }}));
+  const dests={masjid:{zone:"mosque",x:320,y:340},market:{zone:"town",x:560,y:340},home:{zone:"home",x:176,y:340}};
+  const opts=Object.keys(dests).filter(d=>d!==from).map(d=>({t:"Walk to the "+d, fn:()=>{ closeDlg(); loadZone(dests[d].zone,dests[d].x,dests[d].y); targetPos=null; banner("🚶 You walk the garden-wall shortcut to the "+d+"."); }}));
   showDlg("Garden-wall shortcut","🚶","The rebuilt wall opens quick paths between the masjid, the market and the homes. Where to?", opts.concat([{t:"Stay here",fn:closeDlg,alt:true}]));
 }
 function applyBundleVisuals(){
   if(!scene) return;
-  if(G.bundles.wall.done){ wallTiles.forEach(t=>t.setVisible(true)); for(const s in signSpr) signSpr[s].setVisible(true); }
+  if(G.bundles.wall.done){ wallTiles.forEach(t=>t.setVisible(true)); for(const s in signSpr) if(signSpr[s]) signSpr[s].setVisible(true); }
   if(G.bundles.wudu.done&&shelfSpr) shelfSpr.setTexture("shelf_full");
 }
 function refreshBundleWorkers(){
   if(!scene||!workerSpr.bilal) return;
+  if(currentZone!=="mosque"){ workerSpr.bilal.setVisible(false); if(workerSpr.hamza) workerSpr.hamza.setVisible(false); return; }
   let site=null;
   if(!G.bundles.wall.done&&Object.keys(G.bundles.wall.given).length) site=[160,368,192,368];
   else if(!G.bundles.wudu.done&&Object.keys(G.bundles.wudu.given).length) site=[424,200,488,200];
@@ -2781,7 +2927,7 @@ function onBundleDone(k){
   if(k==="carpet"){ const t=G.tasks.find(t=>t.id==="carpet"); if(t)t.done=true; G.coins+=30; addLedger("Gift — carpet restored",30); banner("🕌 The prayer-hall carpet is restored! (+30 coins gift)"); toast("🎉 Carpet Bundle complete! The hall feels new again."); }
   if(k==="cistern"){ banner("💧 The Old Cistern flows again — the gathering place is restored!"); toast("🎉 Cistern Bundle complete! Neighbours gather at the water again."); }
   if(k==="glasshouse"){ banner("🌱 The Glasshouse is rebuilt — crops in every season!"); toast("🎉 Glasshouse Bundle complete!"); }
-  if(k==="wall"){ completeTask("wall"); wallTiles.forEach(t=>t.setVisible(true)); for(const s in signSpr) signSpr[s].setVisible(true); banner("🧱 The garden wall stands! Shortcuts open between the masjid, market and homes."); toast("🎉 Garden Wall Bundle complete! Use the signposts to walk the shortcuts."); }
+  if(k==="wall"){ completeTask("wall"); wallTiles.forEach(t=>t.setVisible(true)); for(const s in signSpr) if(signSpr[s]) signSpr[s].setVisible(true); banner("🧱 The garden wall stands! Shortcuts open between the masjid, market and homes."); toast("🎉 Garden Wall Bundle complete! Use the signposts to walk the shortcuts."); }
   if(k==="wudu"){ completeTask("wudu"); if(shelfSpr) shelfSpr.setTexture("shelf_full"); banner("💧 The wudu area flows and the library shelves are full — recipes and skill books unlock!"); toast("🎉 Wudu & Library Bundle complete! Read skill books in the Skills tab."); }
   if(k==="minaret"){ completeTask("minaret"); banner("🕌 The minaret is repaired! Climb the lookout to see the whole valley."); toast("🎉 Minaret Bundle complete! The map now shows where everyone is."); }
   if(k==="dome"){ completeTask("dome"); banner("🕌 The dome is restored! In Ramadan's last ten nights, the masjid will glow."); toast("🎉 Dome Bundle complete!"); }
@@ -2807,19 +2953,13 @@ document.querySelectorAll("#jTabs button").forEach(b=>b.onclick=()=>renderJourna
 document.getElementById("btnJClose").onclick=()=>toggleOverlay("ovJournal");
 document.getElementById("btnMapClose").onclick=()=>toggleOverlay("ovMap");
 function areaName(x,y){
-  if(x>=896) return "the river";
-  if(y>=416&&x>=640) return "the woods";
-  if(y<224&&x>=640) return "the hunting grounds";
-  if(x<160&&y<110) return "the shaykh's house";
-  if(x>=640&&y>=224&&y<352) return "the kitchen";
-  if(x<200&&y>=200) return "your yard";
-  if(y<200&&x>=200&&x<560) return "the masjid";
-  return "the courtyard";
+  /* Coordinates are zone-local now, so an area IS its zone. */
+  return ZONE_NAMES[currentZone]||"the valley";
 }
 function renderMapNPCs(){
   const el=document.getElementById("mapNPCs"); if(!el) return;
   if(!G.bundles.minaret.done){ el.innerHTML="<div>🔭 <b>Where is everyone?</b> — repair the minaret (bundle) to open the lookout and see where people are.</div>"; return; }
-  el.innerHTML="<div>🔭 <b>From the minaret you can see:</b><br>"+Object.keys(NPCINFO).map(k=>{ const sp=npcSpr[k]; const area=sp?areaName(sp.x,sp.y):"—"; return NPCINFO[k].name+" — "+area; }).join("<br>")+"</div>";
+  el.innerHTML="<div>🔭 <b>From the minaret you can see:</b><br>"+Object.keys(NPCINFO).map(k=>{ const spot=npcSpot(k); const area=spot?(ZONE_NAMES[spot.zone]||"—"):"—"; return NPCINFO[k].name+" — "+area; }).join("<br>")+"</div>";
 }
 document.getElementById("btnMenuClose").onclick=()=>toggleOverlay("ovMenu");
 document.getElementById("btnJournal").onclick=()=>openJournal("tasks");
@@ -2854,7 +2994,7 @@ function makeGame(){
 }
 function syncSoundChips(){ document.getElementById("sndOn").classList.toggle("sel",!!G.sound); document.getElementById("sndOff").classList.toggle("sel",!G.sound); }
 document.getElementById("btnStart").onclick=()=>{
-  try{ localStorage.removeItem(SAVE_KEY); }catch(e){} lastSaveStr="";
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){} lastSaveStr=""; G._savedZone="home"; G._savedPX=null; G._savedPY=null;
   const nm=document.getElementById("inpName").value.trim(); G.name=nm||"Neighbour";
   document.getElementById("ovCreator").classList.remove("open");
   document.getElementById("introTitle").textContent="Welcome to the valley, "+G.name;
@@ -2947,7 +3087,46 @@ if(new URLSearchParams(location.search).get("selftest")==="1"){
       log(G.bundles.carpet.done&&G.tasks.find(t=>t.id==="carpet").done,"carpet bundle completed at the Restoration Board — task handed in");
       // ---- Phase B ----
       log(W===960&&H===640,"Phase B world expanded to 960×640 with camera follow");
-      log(!!(npcSpr.salim&&npcSpr.fatimah&&npcSpr.hassan&&npcSpr.abdullah&&npcSpr.hamza),"five new NPC sprites on the map (Salim, Fatimah, Hassan, Shaykh Abdullah, Hamza)");
+      log(ZONE_W===960&&ZONE_H===640&&Object.keys(ZONES).length===4,"the valley is four 960×640 zones now — Home, Mosque, Town, Outskirts");
+      /* Zone split: each NPC lives in their own zone, so check them there.
+         Pin weather + prayer block so the schedule spots are deterministic. */
+      G.weather="Sunny"; G.prayerIdx=0;
+      loadZone("outskirts",848,320);
+      const fiveOut=!!(npcSpr.salim&&npcSpr.fatimah);
+      loadZone("town",513,299);
+      const fiveTown=!!(npcSpr.hassan&&npcSpr.abdullah);
+      loadZone("mosque",380,184);
+      const fiveMosq=!!npcSpr.hamza;
+      loadZone("home",80,296);
+      log(fiveOut&&fiveTown&&fiveMosq,"five new NPC sprites on the map (Salim, Fatimah, Hassan, Shaykh Abdullah, Hamza) — each in their own zone");
+      // ---- Zone crossings: every connection walked both ways ----
+      closeDlg(); paused=false;
+      log(currentZone==="home"&&Math.abs(player.x-80)<3&&Math.abs(player.y-296)<3,"zones: the valley starts at Home, at the house door");
+      player.x=940; player.y=320; touchDir.right=true;
+      await waitFor(()=>currentZone==="mosque",12000).catch(()=>{}); touchDir.right=false; await sleepMs(350);
+      log(currentZone==="mosque"&&player.x<60&&Math.abs(player.y-320)<5,"zones: walked east Home → Mosque, entered at the west-edge spawn");
+      log(!!npcSpr.yusuf&&!npcSpr.bilal,"zones: Imam Yusuf is at the Mosque; Bilal stays Home");
+      log(!interactables.some(i=>i.label.startsWith("Mailbox")),"zones: no mailbox in the Mosque");
+      player.x=660; player.y=40; touchDir.up=true;
+      await waitFor(()=>currentZone==="outskirts",12000).catch(()=>{}); touchDir.up=false; await sleepMs(350);
+      log(currentZone==="outskirts"&&Math.abs(player.x-660)<5&&player.y>580,"zones: walked north Mosque → Outskirts, entered at the south spawn");
+      log(!!npcSpr.salim&&!!forageSpr.sage&&!!woodSpr.wood1,"zones: Salim fishes the river in the Outskirts; sage and fallen branches grow there");
+      log(interactables.some(i=>i.label.startsWith("River"))&&interactables.some(i=>i.label.startsWith("Hunting Grounds"))&&interactables.some(i=>i.label.startsWith("Pond")),"zones: river fishing, hunting grounds and the pond are all reachable in the Outskirts");
+      player.x=660; player.y=620; touchDir.down=true;
+      await waitFor(()=>currentZone==="mosque",12000).catch(()=>{}); touchDir.down=false; await sleepMs(350);
+      log(currentZone==="mosque","zones: walked south Outskirts → Mosque");
+      player.x=940; player.y=320; touchDir.right=true;
+      await waitFor(()=>currentZone==="town",12000).catch(()=>{}); touchDir.right=false; await sleepMs(350);
+      log(currentZone==="town"&&player.x<60&&areaName()==="Town","zones: walked east Mosque → Town, entered at the west-edge spawn (area: Town)");
+      log(!!npcSpr.khalid&&!!npcSpr.hassan,"zones: Abu Khalid and Hassan are in Town");
+      log(!interactables.some(i=>i.label.startsWith("Mailbox")),"zones: the mailbox is at Home, NOT in Town");
+      player.x=20; player.y=320; touchDir.left=true;
+      await waitFor(()=>currentZone==="mosque",12000).catch(()=>{}); touchDir.left=false; await sleepMs(350);
+      log(currentZone==="mosque"&&player.x>900,"zones: walked west Town → Mosque");
+      player.x=20; player.y=320; touchDir.left=true;
+      await waitFor(()=>currentZone==="home",12000).catch(()=>{}); touchDir.left=false; await sleepMs(350);
+      log(currentZone==="home"&&player.x>900,"zones: walked west Mosque → Home — every crossing works both ways");
+      log(interactables.some(i=>i.label.startsWith("Mailbox")),"zones: the mailbox is back at Home by the house door");
       ["abdullah","hassan","salim","fatimah","hamza"].forEach(k=>{ talkNPC(k); const b=document.querySelector("#dlg .dlgopts button"); if(b)b.click(); });
       log(["abdullah","hassan","salim","fatimah","hamza"].every(k=>G.talkedToday[k]===totalDay()),"talked to all five new NPCs — once-a-day talk bonus recorded");
       G.inv.tomato=3; const hv=G.trust.hassan.v; giveGift("hassan","tomato");
@@ -2984,7 +3163,11 @@ if(new URLSearchParams(location.search).get("selftest")==="1"){
       G.inv.stone=5; G.inv.clay=4; G.inv.lime=3; G.inv.wood=3;
       openJournal("bundles"); await giveItems("wall",["stone","clay","lime","wood"]);
       log(G.bundles.wall.done&&G.tasks.find(t=>t.id==="wall").done,"garden-wall bundle (any 4 of 6) complete — shortcuts open, task done");
-      log(signSpr.masjid.visible===true,"shortcut signposts visible after the wall bundle");
+      loadZone("mosque",320,340);
+      log(signSpr.masjid.visible===true,"shortcut signposts visible after the wall bundle (masjid signpost, Mosque zone)");
+      loadZone("town",560,340);
+      log(signSpr.market.visible===true,"shortcut signposts visible after the wall bundle (market signpost, Town zone)");
+      loadZone("home",80,296);
       G.inv.stone=5; G.inv.lime=4; G.inv.clay=4; G.inv.wood=3;
       await giveItems("wudu",["stone","lime","clay","wood"]);
       log(G.bundles.wudu.done&&G.tasks.find(t=>t.id==="wudu").done,"wudu & library bundle complete — shelf full, skill books unlock");
@@ -3025,9 +3208,11 @@ if(new URLSearchParams(location.search).get("selftest")==="1"){
       G.month=0; log(MV.currentAct()===1,"Act 1 in Muharram"); G.month=2; log(MV.currentAct()===2,"Act 2 in Rabi' al-Awwal"); G.month=6; log(MV.currentAct()===3,"Act 3 in Rajab"); G.month=8; log(MV.currentAct()===4,"Act 4 = Ramadan month"); G.month=10; log(MV.currentAct()===5,"Act 5 in Dhul-Qa'dah");
       log(Object.keys(NPCINFO).length===26&&Object.keys(G.trust).length===26,"full roster: 26 townspeople in NPCINFO and trust (24 + Huda & Yasir, Year Two)");
       G.month=0; G.year=1;
+      loadZone("mosque",320,340);
       log(npcSpr.nura&&npcSpr.nura.visible===false,"Nura is hidden before Act 2 (she arrives when the community wakes)");
       talkNPC("nura"); log(G.met.nura!==true,"talking to Nura in Act 1 is refused — she hasn't arrived yet");
       G.month=2; G.day=3; G.lastAct=1; sleep();
+      loadZone("mosque",320,340);
       log(npcSpr.nura&&npcSpr.nura.visible!==false,"Act change 1 → 2: Nura arrives in the valley");
       talkNPC("nura"); document.querySelector("#dlg .dlgopts button").click();
       log(G.met.nura===true&&G.talkedToday.nura===totalDay(),"talked to Nura in Act 2 — once-a-day talk recorded");
@@ -3164,9 +3349,11 @@ if(new URLSearchParams(location.search).get("selftest")==="1"){
       G.year=2; G.month=0; G.day=1; G.hour=6; G.energy=100; G.coins=2000;
       G.inv.stone=30; G.inv.wood=30; G.inv.clay=20; G.inv.wool=5;
       openJournal("bundles"); await giveAll("communityHall",["stone","wood","coins"]);
+      loadZone("town",500,120);
       log(G.bundles.communityHall.done&&legacySpr.communityHall.visible===true&&G.tasks.find(t=>t.id==="legacy1").done,"legacy: community hall bundle complete at the board — hall sprite visible, legacy task done");
       openJournal("bundles"); await giveAll("guestHouse",["stone","wood","coins"]);
       log(G.bundles.guestHouse.done&&G.tasks.find(t=>t.id==="guesthouse").done&&G.generation.newHouseholdYear===2&&G.tasks.find(t=>t.id==="newcomers").done,"legacy: guest house built in Year Two — Huda & Yasir arrive through it (new household Year 2)");
+      loadZone("home",240,320);
       log(!!(npcSpr.huda&&npcSpr.yasir)&&npcSpr.huda.visible!==false,"newcomers: Huda and Yasir have sprites on the map by the guest house");
       talkNPC("huda"); document.querySelector("#dlg .dlgopts button").click();
       log(G.met.huda===true&&G.talkedToday.huda===totalDay(),"newcomers: talked to Huda — once-a-day talk recorded");
@@ -3255,6 +3442,23 @@ if(new URLSearchParams(location.search).get("selftest")==="1"){
       G.coins=999999; G.name="Changed";
       const loadedOk=loadGame();
       log(savedOk&&loadedOk&&G.coins===snap.coins&&G.name===snap.name&&G.inv.wool===snap.wool&&G.bundles.carpet.done&&G.recipes.join()===snap.recipes.join()&&G.zabihaLearned===snap.zabiha&&G.bundles.wall.done===snap.wall&&G.inv.venison===snap.venison,"save → load round-trip (v3): localStorage restored coins ("+G.coins+"), name, wool, recipes, zabiha, wall bundle and venison");
+      // ---- Zones: a v:4 save carries its zone; an old save without one defaults to Home ----
+      MV.loadZone("town",500,300); G.coins=4242;
+      const zSnap=MV.snapshotState();
+      log(zSnap.zone==="town"&&zSnap.px===500&&zSnap.py===300,"zones: snapshotState carries the zone and position (town 500,300)");
+      const zSaved=saveGame(); G.coins=1; G._savedZone="home";
+      const zLoaded=loadGame();
+      log(zSaved&&zLoaded&&G.coins===4242&&G._savedZone==="town"&&G._savedPX===500&&G._savedPY===300,"zones: save → load round-trip restores coins and the saved zone/position");
+      MV.loadZone(G._savedZone,G._savedPX,G._savedPY);
+      log(MV.currentZone()==="town"&&Math.round(player.x)===500&&Math.round(player.y)===300,"zones: Continue spawns in the saved zone at the saved position");
+      const oldZone=MV.snapshotState(); delete oldZone.zone; delete oldZone.px; delete oldZone.py; oldZone.v=4;
+      localStorage.setItem("masjid-valley-save-v1",JSON.stringify(oldZone));
+      const oldLoaded=loadGame();
+      log(oldLoaded&&G._savedZone==="home"&&G._savedPX===null,"zones: an old v4 save with no zone field defaults to Home");
+      MV.loadZone(G._savedZone,G._savedPX,G._savedPY);
+      log(MV.currentZone()==="home"&&Math.abs(player.x-80)<3&&Math.abs(player.y-296)<3,"zones: an old save spawns at the house door");
+      MV.loadZone("town",500,300); sleep();
+      log(MV.currentZone()==="home"&&Math.abs(player.x-80)<3&&Math.abs(player.y-296)<3,"zones: sleep() wakes the player at Home, at the house door");
       updateHUD();
     }catch(e){ log(false,"self-test error: "+(e&&e.message)); }
     logs.push("SELFTEST COMPLETE: "+pass+" passed, "+fail+" failed");
