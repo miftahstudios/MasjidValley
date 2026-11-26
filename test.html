@@ -4,7 +4,15 @@
 window.__errs=[];
 window.onerror=function(m,s,l,c){var t=m+' @ '+(s||'')+':'+(l||'');window.__errs.push(t);var d=document.getElementById('errlog');if(d)d.textContent=window.__errs.join(' || ');return false;};
 window.addEventListener('unhandledrejection',function(e){var t='rejection: '+((e.reason&&e.reason.message)||e.reason);window.__errs.push(t);var d=document.getElementById('errlog');if(d)d.textContent=window.__errs.join(' || ');});
-setInterval(function(){var d=document.getElementById('errlog');if(!d)return;var c=document.querySelector('#game-container canvas');d.textContent='Phaser='+(typeof Phaser)+' | canvas='+(c?('yes '+c.width+'x'+c.height):'NO')+' | errs=['+window.__errs.join(' || ')+']';},2000);
+setInterval(function(){var d=document.getElementById('errlog');if(!d)return;var c=document.querySelector('#game-container canvas');var s='';
+try{var g=window.game;
+ if(g){var sc=null;try{sc=g.scene.getScene('main');}catch(e){sc=null;}
+  if(!sc&&g.scene&&g.scene.scenes&&g.scene.scenes.length)sc=g.scene.scenes[0];
+  if(sc){var ld=sc.sys&&sc.sys.load;var active=sc.sys?sc.sys.isActive():'?';var tot=ld?ld.totalToLoad:'?';var done=ld?ld.totalComplete:'?';var loading=ld?ld.isLoading():'?';var tex=0;try{tex=Object.keys(g.textures.list||{}).length;}catch(e){}
+   s=' | sceneActive='+active+' | load='+done+'/'+tot+' loading='+loading+' | tex='+tex+' | createDone='+(typeof window.scene!=='undefined'&&window.scene?'yes':'no');}
+  else{s=' | no main scene';}}
+ else{s=' | no game yet';}}catch(e){s=' | diagErr='+e.message;}
+ d.textContent='Phaser='+(typeof Phaser)+' | canvas='+(c?('yes '+c.width+'x'+c.height):'NO')+' | errs=['+window.__errs.join(' || ')+']'+s;},2000);
 </script>
 <div id="errlog" style="position:fixed;top:0;left:0;z-index:999999;background:#fff;color:#c00;font-size:13px;padding:6px;max-width:100vw;word-break:break-all;border:2px solid #c00;">booting…</div>
 
